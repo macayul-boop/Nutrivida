@@ -3,6 +3,7 @@ import HeaderAdministracion from '../../componente/HeaderAdministracion';
 import FormularioUsuario from '../../componente/FormularioUsuario';
 import Empleado from '../../componente/Empleado';
 import ModalConfirmacion from '../../componente/ModalConfirmacion';
+import DetallesEmpleados from '../../componente/DetallesEmpleado';
 
 function AdministracionUsuario(){
 
@@ -23,6 +24,8 @@ function AdministracionUsuario(){
             ? JSON.parse(usuariosGuardados) 
             : [{id:"1", rut:"22230649-7", nombre:"Matias", apellidos:"Cayul", telefono:"+56963391571", email:"example@gmail.com", contrasena:"1234567", rol:"Secretario", "estado":"Activo"}];
     })
+
+    const [detallesUsuarios, setDetallesUsuarios] = useState([])
 
     // Se guarada los datos cada vez que se modifica la lista de usuario
     useEffect(() => {
@@ -70,6 +73,17 @@ function AdministracionUsuario(){
         setUsuarioEliminar(null)
     }
 
+    const agregarDetallesUsuarios = (usuario)=>{
+        const existeUsuario = detallesUsuarios.find((value) => value.id === usuario.id)
+        if(existeUsuario !== undefined) return
+        setDetallesUsuarios([...detallesUsuarios, usuario])
+    }
+
+    const ocultarDetallesUsuario = (idUsuario) => {
+        const nuevaLista = detallesUsuarios.filter((value) => value.id !== idUsuario);
+        setDetallesUsuarios(nuevaLista)
+    }
+
     return(
         <div>
             <HeaderAdministracion rol={"Administracion"}/>
@@ -80,7 +94,7 @@ function AdministracionUsuario(){
                 <section className='w-full flex justify-end'>
                     <button onClick={()=> toggle()} className='px-4 py-2 bg-green-600 rounded-lg cursor-pointer'>Crear usuario</button>
                 </section>
-                <section className='max-w-7xl w-full h-[25rem] overflow-y-scroll border border-gray-200 rounded-lg'>
+                <section className='max-w-7xl w-full h-[20rem] overflow-y-scroll border border-gray-200 rounded-lg'>
                     <section className='w-full grid py-2 bg-gray-900 text-white px-4 grid grid-cols-4'>
                         <div>
                             <p>Nombre</p>
@@ -94,9 +108,14 @@ function AdministracionUsuario(){
                     </section>
                     <section>
                         {listaUsuario.map((value, key) => (
-                            <Empleado key={key} datos={value} onEditar={()=> editarUsuario(value)} onEliminar={()=> mostrarModalEliminar(value.id)}/>
+                            <Empleado key={key} datos={value} onEditar={()=> editarUsuario(value)} onEliminar={()=> mostrarModalEliminar(value.id)} onShow={()=> agregarDetallesUsuarios(value)}/>
                         ))}
                     </section>
+                </section>
+                <section className='flex flex-wrap items-center lg:justify-start'>
+                    {detallesUsuarios.map((value, key)=> (
+                        <DetallesEmpleados key={key} datos={value} onCerrar={()=> ocultarDetallesUsuario(value.id)}/>
+                    ))}
                 </section>
             </main>
             {modal && <FormularioUsuario onCerrarModal={()=> toggle()} usuarioEditado={editandoUsuario} onGuardar={guardarUsuario} onLimpiarEditable={()=>setEditandoUsuario(null)} />}
