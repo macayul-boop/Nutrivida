@@ -2,16 +2,21 @@ import { useState, useEffect } from 'react';
 import HeaderAdministracion from '../../componente/HeaderAdministracion';
 import FormularioUsuario from '../../componente/FormularioUsuario';
 import Empleado from '../../componente/Empleado';
+import ModalConfirmacion from '../../componente/ModalConfirmacion';
 
 function AdministracionUsuario(){
 
+    // Controlar el modal de crear
     const [modal, setModal] = useState(false)
+
+    // Controlar y mandar informacion para eliminar un usuario
+    const [modalEliminar, setModalEliminar] = useState(false)
+    const [usuarioEliminar, setUsuarioEliminar] = useState(null)
+
+    // Controlar el usaurio que se esta eliminado
     const [editandoUsuario, setEditandoUsuario] = useState(null)
 
-    const toggle = ()=>{
-        setModal(!modal)
-    }
-
+    // lista de usaurios
     const [listaUsuario, setListaUsuario] = useState(()=>{
         const usuariosGuardados = localStorage.getItem('usuarios');
         return usuariosGuardados 
@@ -19,10 +24,17 @@ function AdministracionUsuario(){
             : [{id:"1", rut:"22230649-7", nombre:"Matias", apellidos:"Cayul", telefono:"+56963391571", email:"example@gmail.com", contrasena:"1234567", rol:"Secretario", "estado":"Activo"}];
     })
 
+    // Se guarada los datos cada vez que se modifica la lista de usuario
     useEffect(() => {
         localStorage.setItem('usuarios', JSON.stringify(listaUsuario));
     }, [listaUsuario]);
 
+    // Abrir o cerrar el modal de crear usuario
+    const toggle = ()=>{
+        setModal(!modal)
+    }
+
+    // Guardar el usuario
     const guardarUsuario = (usuario)=>{
         if(editandoUsuario !== null){
             setListaUsuario(listaUsuario.map((value) => value.id === usuario.id ? usuario : value))
@@ -32,9 +44,30 @@ function AdministracionUsuario(){
         }
     }
 
+    // le asiganas el usaurio a ediat y activa el formulario
     const editarUsuario = (usuario)=>{
         toggle()
         setEditandoUsuario(usuario)
+    }
+
+    // Activa el modal y asignar el id del usuario a eliminar
+    const mostrarModalEliminar = (idUsuario)=>{
+        console.log("Funcion mostrar modal eliminar")
+        setModalEliminar(!modalEliminar)
+        setUsuarioEliminar(idUsuario);
+    }
+
+    // Caneler la accion y quita el usuario a eliminar y descativa el modal
+    const cancelarEliminar = ()=>{
+        setModalEliminar(!modalEliminar)
+        setUsuarioEliminar(null)
+    }
+
+    // Elimina el usuario y libera el id del usaurio eliminado
+    const eliminarUsuario = (idUsuario)=>{
+        setListaUsuario(listaUsuario.filter(value=> value.id !== idUsuario));
+        setModalEliminar(!modalEliminar)
+        setUsuarioEliminar(null)
     }
 
     return(
@@ -61,12 +94,13 @@ function AdministracionUsuario(){
                     </section>
                     <section>
                         {listaUsuario.map((value, key) => (
-                            <Empleado key={key} datos={value} onEditar={()=> editarUsuario(value)}/>
+                            <Empleado key={key} datos={value} onEditar={()=> editarUsuario(value)} onEliminar={()=> mostrarModalEliminar(value.id)}/>
                         ))}
                     </section>
                 </section>
             </main>
             {modal && <FormularioUsuario onCerrarModal={()=> toggle()} usuarioEditado={editandoUsuario} onGuardar={guardarUsuario} onLimpiarEditable={()=>setEditandoUsuario(null)} />}
+            {modalEliminar && <ModalConfirmacion titulo={"¿Estas seguro que quieres eliminar el usuario?"} onCancelar={()=> cancelarEliminar()} onEvento={()=>eliminarUsuario(usuarioEliminar)} textEvento={"Eliminar"}/>}
         </div>
     )
     
