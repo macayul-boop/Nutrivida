@@ -73,12 +73,14 @@ function AdministracionUsuario(){
         setUsuarioEliminar(null)
     }
 
+    // Agregar un usuario a la lista ver detalles
     const agregarDetallesUsuarios = (usuario)=>{
         const existeUsuario = detallesUsuarios.find((value) => value.id === usuario.id)
         if(existeUsuario !== undefined) return
         setDetallesUsuarios([...detallesUsuarios, usuario])
     }
 
+    // Ocultar detalles de un usuario
     const ocultarDetallesUsuario = (idUsuario) => {
         const nuevaLista = detallesUsuarios.filter((value) => value.id !== idUsuario);
         setDetallesUsuarios(nuevaLista)
@@ -91,8 +93,8 @@ function AdministracionUsuario(){
                 <section className="bg-gray-900 w-full mt-15 lg:mt-1 rounded-md">
                     <h1 className="text-3xl font-bold text-white py-4 px-8">Empleados</h1>
                 </section>
-                <section className='w-full flex justify-end'>
-                    <button onClick={()=> toggle()} className='px-4 py-2 bg-green-600 rounded-lg cursor-pointer'>Crear usuario</button>
+                <section className='w-full flex justify-end py-4'>
+                    <button onClick={()=> toggle()} className='px-4 py-2 bg-green-800 text-white font-semibold rounded-lg cursor-pointer'>Crear usuario</button>
                 </section>
                 <section className='max-w-7xl w-full h-[20rem] overflow-y-scroll border border-gray-200 rounded-lg'>
                     <section className='w-full grid py-2 bg-gray-900 text-white px-4 grid grid-cols-4'>
