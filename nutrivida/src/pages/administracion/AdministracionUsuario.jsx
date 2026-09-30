@@ -6,6 +6,7 @@ import Empleado from '../../componente/Empleado';
 function AdministracionUsuario(){
 
     const [modal, setModal] = useState(false)
+    const [editandoUsuario, setEditandoUsuario] = useState(null)
 
     const toggle = ()=>{
         setModal(!modal)
@@ -23,7 +24,17 @@ function AdministracionUsuario(){
     }, [listaUsuario]);
 
     const guardarUsuario = (usuario)=>{
-        setListaUsuario([...listaUsuario, usuario])
+        if(editandoUsuario !== null){
+            setListaUsuario(listaUsuario.map((value) => value.id === usuario.id ? usuario : value))
+            setEditandoUsuario(null)
+        }else{
+            setListaUsuario([...listaUsuario, usuario])
+        }
+    }
+
+    const editarUsuario = (usuario)=>{
+        toggle()
+        setEditandoUsuario(usuario)
     }
 
     return(
@@ -50,12 +61,12 @@ function AdministracionUsuario(){
                     </section>
                     <section>
                         {listaUsuario.map((value, key) => (
-                            <Empleado key={key} datos={value}/>
+                            <Empleado key={key} datos={value} onEditar={()=> editarUsuario(value)}/>
                         ))}
                     </section>
                 </section>
             </main>
-            {modal && <FormularioUsuario onCerrarModal={()=> toggle()} onGuardar={guardarUsuario}/>}
+            {modal && <FormularioUsuario onCerrarModal={()=> toggle()} usuarioEditado={editandoUsuario} onGuardar={guardarUsuario} onLimpiarEditable={()=>setEditandoUsuario(null)} />}
         </div>
     )
     

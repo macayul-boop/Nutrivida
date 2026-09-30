@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 import InputText from "./InputText"
 import DiaSemana from "./DiaSemana"
 
-function FormularioUsuario({onCerrarModal, onGuardar}){
-
+function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarEditable}){
+    
     const [error, setError] = useState({})
     const [rut, setRut] = useState('')
     const [nombre, setNombre] = useState('')
@@ -15,10 +15,29 @@ function FormularioUsuario({onCerrarModal, onGuardar}){
     const [estado, setEstado] = useState('Activo')
     const [dias, setDias] = useState([])
 
+    /* eslint-disable react-hooks/set-state-in-effect */
+    useEffect(()=>{
+        if(usuarioEditado){
+            setRut(usuarioEditado.rut)
+            setNombre(usuarioEditado.nombre)
+            setApellidos(usuarioEditado.apellidos)
+            setTelefono(usuarioEditado.telefono)
+            setEmail(usuarioEditado.email)
+            setContrasena(usuarioEditado.contrasena)
+            setRol(usuarioEditado.rol)
+            setEstado(usuarioEditado.estado)
+            setDias(usuarioEditado.horario || [])
+            console.log(usuarioEditado.horario)
+        }
+
+    }, [usuarioEditado])
+    /* eslint-enable react-hooks/set-state-in-effect */
+
     const cancelar = (e)=>{
         e.preventDefault()
+        onLimpiarEditable()
+        limpiarCampos()
         onCerrarModal()
-        console.log("Hola")
     }
 
     const agregarHorario = (e)=>{
@@ -105,7 +124,7 @@ function FormularioUsuario({onCerrarModal, onGuardar}){
 
         if(rol === 'Secretario'){
             molde = {
-                "id":Date.now(),
+                "id":usuarioEditado?.id || Date.now(),
                 "rut":rut,
                 "nombre":nombre,
                 "apellidos":apellidos,
@@ -138,7 +157,7 @@ function FormularioUsuario({onCerrarModal, onGuardar}){
             }
 
             molde = {
-                "id":Date.now(),
+                "id":usuarioEditado?.id || Date.now(),
                 "rut":rut,
                 "nombre":nombre,
                 "apellidos":apellidos,
@@ -149,6 +168,7 @@ function FormularioUsuario({onCerrarModal, onGuardar}){
                 "estado":estado,
                 "horario":horarioFinal
             }
+            console.log(horarioFinal)
         }
 
         setError(nuevosErrores)
@@ -158,6 +178,7 @@ function FormularioUsuario({onCerrarModal, onGuardar}){
             console.log(molde)
             onGuardar(molde)
             limpiarCampos()
+            onCerrarModal()
         }else{
             console.log("Fallo")
             console.log(rol)
@@ -211,7 +232,7 @@ function FormularioUsuario({onCerrarModal, onGuardar}){
                         </section>
                         <section className="overflow-y-scroll max-h-60 h-30 flex flex-col gap-1.5">
                             {dias.map((value, index)=>(
-                                <DiaSemana key={value.id} index={index} dia={value} horaInicio={value} horaTermino={value} onEliminar={(e)=> eliminarHorario(e, index)}/>
+                                <DiaSemana key={index} index={index} datos={value} onEliminar={(e)=> eliminarHorario(e, index)}/>
                             ))}
                         </section>
                         {error.horario && <span className="text-red-500">{error.horario}</span>}
