@@ -1,10 +1,10 @@
-
+import AdministracionUsuario from "./pages/administracion/administracionUsuario"
 
 function App() {
 
   return (
     <>
-      <h1>Hola</h1>
+      <AdministracionUsuario/>
     </>
   )
 }
