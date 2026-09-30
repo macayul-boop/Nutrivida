@@ -15,7 +15,7 @@ function AdministracionUsuario(){
         const usuariosGuardados = localStorage.getItem('usuarios');
         return usuariosGuardados 
             ? JSON.parse(usuariosGuardados) 
-            : [{id:"1", rut:"22230649-7", nombre:"Matias", apellidos:"Cayul", telefono:"+56963391571", email:"example@gmail.com", contrasena:"1234567", rol:"Secretario"}];
+            : [{id:"1", rut:"22230649-7", nombre:"Matias", apellidos:"Cayul", telefono:"+56963391571", email:"example@gmail.com", contrasena:"1234567", rol:"Secretario", "estado":"Activo"}];
     })
 
     useEffect(() => {

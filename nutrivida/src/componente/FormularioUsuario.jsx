@@ -12,6 +12,7 @@ function FormularioUsuario({onCerrarModal, onGuardar}){
     const [email, setEmail] = useState('')
     const [contrasena, setContrasena] = useState('')
     const [rol, setRol] = useState('')
+    const [estado, setEstado] = useState('Activo')
     const [dias, setDias] = useState([])
 
     const cancelar = (e)=>{
@@ -34,6 +35,18 @@ function FormularioUsuario({onCerrarModal, onGuardar}){
     const eliminarHorario = (e, indice)=>{
         e.preventDefault()
         setDias(dias.filter((valor, index) => index !== indice))
+    }
+
+    const limpiarCampos = ()=>{
+        setRut('')
+        setNombre('')
+        setApellidos('')
+        setTelefono('')
+        setEmail('')
+        setContrasena('')
+        setRol('')
+        setEstado('Activo')
+        setDias([])
     }
 
     const guardarUsuario = (e)=>{
@@ -85,6 +98,11 @@ function FormularioUsuario({onCerrarModal, onGuardar}){
             nuevosErrores.rol = 'Selecciona un rol'
         }
 
+        // Estado
+        if(estado != 'Deshabilitado' && estado != 'Activo'){
+            nuevosErrores.estado = 'Selecciona un estado'
+        }
+
         if(rol === 'Secretario'){
             molde = {
                 "id":Date.now(),
@@ -94,7 +112,8 @@ function FormularioUsuario({onCerrarModal, onGuardar}){
                 "telefono":telefono,
                 "email":email,
                 "contrasena":contrasena,
-                "rol":rol
+                "rol":rol,
+                "estado":estado
             }
         }else if(rol === 'Nutricionista'){
 
@@ -127,6 +146,7 @@ function FormularioUsuario({onCerrarModal, onGuardar}){
                 "email":email,
                 "contrasena":contrasena,
                 "rol":rol,
+                "estado":estado,
                 "horario":horarioFinal
             }
         }
@@ -137,6 +157,7 @@ function FormularioUsuario({onCerrarModal, onGuardar}){
             console.log("Paso")
             console.log(molde)
             onGuardar(molde)
+            limpiarCampos()
         }else{
             console.log("Fallo")
             console.log(rol)
@@ -162,15 +183,26 @@ function FormularioUsuario({onCerrarModal, onGuardar}){
                     <input type="password" value={contrasena} placeholder="Contraseña" onChange={(e)=> setContrasena(e.target.value)} className="px-4 py-2 border border-gray-300 rounded-lg"/>
                     {error.contrasena && <span className="text-red-500 text-sm">{error.contrasena}</span>}
                 </div>
-                <div className="flex flex-col w-full gap-1 text-[#0f172a]">
-                    <label>Rol</label>
-                    <select value={rol} onChange={(e)=> setRol(e.target.value)} name="roles" className="w-full border border-gray-300 rounded-lg px-4 py-2">
-                        <option value="">Sin seleccionar</option>
-                        <option value="Nutricionista">Nutricionista</option>
-                        <option value="Secretario">Secretario</option>
-                    </select>
-                    {error.rol && <span className="text-red-500">{error.rol}</span>}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    <div className="flex flex-col w-full gap-1 text-[#0f172a]">
+                        <label>Rol</label>
+                        <select value={rol} onChange={(e)=> setRol(e.target.value)} name="roles" className="w-full border border-gray-300 rounded-lg px-4 py-2">
+                            <option value="">Sin seleccionar</option>
+                            <option value="Nutricionista">Nutricionista</option>
+                            <option value="Secretario">Secretario</option>
+                        </select>
+                        {error.rol && <span className="text-red-500">{error.rol}</span>}
+                    </div>
+                    <div className="flex flex-col w-full gap-1 text-[#0f172a]">
+                        <label>Estado</label>
+                        <select value={estado} onChange={(e)=> setEstado(e.target.value)} name="estados" className="w-full border border-gray-300 rounded-lg px-4 py-2">
+                            <option value="Activo">Activo</option>
+                            <option value="Deshabilitado">Deshabilitado</option>
+                        </select>
+                        {error.estado && <span className="text-red-500">{error.estado}</span>}
+                    </div>
                 </div>
+            
                 {rol === 'Nutricionista' &&
                     <div>
                         <section className="w-full flex justify-between">
