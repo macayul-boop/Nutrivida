@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import HeaderAdministracion from '../../componente/HeaderAdministracion';
 import FormularioUsuario from '../../componente/FormularioUsuario';
 import Empleado from '../../componente/Empleado';
 import ModalConfirmacion from '../../componente/ModalConfirmacion';
 import DetallesEmpleados from '../../componente/DetallesEmpleado';
 
-function AdministracionUsuario(){
+function AdministracionEmpleado(){
 
     // Controlar el modal de crear
     const [modal, setModal] = useState(false)
@@ -230,7 +229,6 @@ function AdministracionUsuario(){
 
     return(
         <div>
-            <HeaderAdministracion rol={"Administracion"}/>
             <main className="max-w-8xl overflow-x-hidden lg:ml-[300px] ml-0 lg:ml-20 p-4">
                 <section className="bg-gray-900 w-full mt-15 lg:mt-1 rounded-md">
                     <h1 className="text-3xl font-bold text-white py-4 px-8">Empleados</h1>
@@ -269,4 +267,4 @@ function AdministracionUsuario(){
     
 }
 
-export default AdministracionUsuario
+export default AdministracionEmpleado

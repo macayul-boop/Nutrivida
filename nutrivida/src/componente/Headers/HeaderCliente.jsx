@@ -1,6 +1,7 @@
 import { useState } from "react"
+import { Link } from "react-router-dom"
 
-function HeaderCliente(){
+function HeaderCliente({datos, onCerrarSesion}){
 
     const [menuAbierto, setMenuAbierto] = useState(false)
     
@@ -20,11 +21,12 @@ function HeaderCliente(){
     
                     <nav id="menu" className={`w-full lg:flex lg:w-auto lg:items-center mt-4 lg:mt-0 ${menuAbierto ? '' : 'hidden'}`}>
                         <ul className="flex flex-col lg:flex-row gap-4 font-medium">
-                            <li><a href="../index.html" className="block hover:text-emerald-500">Inicio</a></li>
-                            <li><a href="./servicios.html" className="block hover:text-emerald-500">Servicios</a></li>
-                            <li><a href="./nosotros.html" className="block hover:text-emerald-500">Nosotros</a></li>
-                            <li><a className="block hover:text-emerald-500">Tus reservas</a></li>
-                            <li><a className="block hover:text-emerald-500">Reservar</a></li>
+                            <li><Link to={"/"} className="block hover:text-emerald-500">Inicio</Link></li>
+                            <li><Link to={"/servicios"} className="block hover:text-emerald-500">Servicios</Link></li>
+                            <li><Link to={"/nosotros"} className="block hover:text-emerald-500">Nosotros</Link></li>
+
+                            <li><Link to={"/tusReservas"} className="block hover:text-emerald-500">Tus reservas</Link></li>
+                            <li><Link to={"/reservar"} className="block hover:text-emerald-500">Reservar</Link></li>
                             <div>
                                 <p>Nombre</p>
                                 <button>Cerrar Sesion</button>
