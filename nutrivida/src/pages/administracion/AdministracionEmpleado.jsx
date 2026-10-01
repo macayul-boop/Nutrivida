@@ -28,7 +28,7 @@ function AdministracionEmpleado(){
                     nombre:"Matias", 
                     apellidos:"Cayul", 
                     telefono:"+56963391571", 
-                    email:"example@gmail.com", 
+                    email:"admin@gmail.com", 
                     contrasena:"1234567", 
                     rol:"Admin", 
                     estado:"Activo"
@@ -39,7 +39,7 @@ function AdministracionEmpleado(){
                     nombre:"Carolina", 
                     apellidos:"Fuentes", 
                     telefono:"+56912345678", 
-                    email: "example@gmail.com", 
+                    email: "nutri1@gmail.com", 
                     contrasena:"1234567", 
                     rol:"Nutricionista", 
                     estado:"Activo", 
@@ -67,7 +67,7 @@ function AdministracionEmpleado(){
                     nombre:"Rodrigo", 
                     apellidos:"Sepulveda", 
                     telefono:"+56912345678", 
-                    email: "example@gmail.com", 
+                    email: "nutri2@gmail.com", 
                     contrasena:"1234567", 
                     rol:"Nutricionista", 
                     estado:"Activo", 
@@ -95,7 +95,7 @@ function AdministracionEmpleado(){
                     nombre:"Daniela", 
                     apellidos:"Morales", 
                     telefono:"+56912345678", 
-                    email: "example@gmail.com", 
+                    email: "nutri3@gmail.com", 
                     contrasena:"1234567", 
                     rol:"Nutricionista", 
                     estado:"Activo", 
@@ -118,7 +118,7 @@ function AdministracionEmpleado(){
                     nombre:"Rodrigo", 
                     apellidos:"Sepulveda", 
                     telefono:"+56912345678", 
-                    email: "example@gmail.com", 
+                    email: "nutri4@gmail.com", 
                     contrasena:"1234567", 
                     rol:"Nutricionista", 
                     estado:"Activo", 
@@ -146,7 +146,7 @@ function AdministracionEmpleado(){
                     nombre:"Felipe", 
                     apellidos:"Araya", 
                     telefono:"+56912345678", 
-                    email: "example@gmail.com", 
+                    email: "nutri5@gmail.com", 
                     contrasena:"1234567", 
                     rol:"Nutricionista", 
                     estado:"Activo", 
@@ -250,7 +250,7 @@ function AdministracionEmpleado(){
                     </section>
                     <section>
                         {listaUsuario
-                            .filter((value, key)=> value.rol === 'Secretario' || value.rol === 'Nutricionista')
+                            .filter((value)=> value.rol === 'Secretario' || value.rol === 'Nutricionista')
                             .map((value, key)=>(
                              <Empleado key={key} datos={value} onEditar={()=> editarUsuario(value)} onEliminar={()=> mostrarModalEliminar(value.id)} onShow={()=> agregarDetallesUsuarios(value)}/>
                         ))}
