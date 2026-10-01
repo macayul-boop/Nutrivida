@@ -53,7 +53,7 @@ function AdministracionEmpleado(){
                             dia:"Miercoles",
                             horaInicio:"09:00",
                             horaTermino:"17:00"
-                        },
+                        },  
                         {
                             dia:"Viernes",
                             horaInicio:"09:00",
@@ -249,9 +249,12 @@ function AdministracionEmpleado(){
                         </div>
                     </section>
                     <section>
-                        {listaUsuario.map((value, key) => (
-                            <Empleado key={key} datos={value} onEditar={()=> editarUsuario(value)} onEliminar={()=> mostrarModalEliminar(value.id)} onShow={()=> agregarDetallesUsuarios(value)}/>
+                        {listaUsuario
+                            .filter((value, key)=> value.rol === 'Secretario' || value.rol === 'Nutricionista')
+                            .map((value, key)=>(
+                             <Empleado key={key} datos={value} onEditar={()=> editarUsuario(value)} onEliminar={()=> mostrarModalEliminar(value.id)} onShow={()=> agregarDetallesUsuarios(value)}/>
                         ))}
+                        
                     </section>
                 </section>
                 <section className='flex flex-wrap items-center lg:justify-start'>
