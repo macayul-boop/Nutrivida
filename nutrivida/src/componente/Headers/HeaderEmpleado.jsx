@@ -1,0 +1,88 @@
+import { useState } from "react"
+
+function HeaderEmpleado(){
+    const [menuAbierto, setMenuAbierto] = useState(false)
+    
+        const abrirMenu = ()=>{
+            setMenuAbierto(!menuAbierto)
+        }
+    
+        const cerrarMenu = ()=>{
+            setMenuAbierto(!menuAbierto)
+        }
+    
+        return(
+            <div>
+                <button  onClick={()=> abrirMenu()} id="btn-abrir-nav" className="absolute text-white top-5 left-4 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-10 px-2 bg-gray-900 rounded-md">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+                
+                <nav id="nav" className={`sidebar fixed top-0 z-10 bottom-0 lg:left-0 ${menuAbierto == true ? 'left-[0px]' :'left-[-300px]'} duration-500 p-2 w-[300px] overflow-y-auto text-center bg-gray-900 shadow h-screen`}>
+    
+                    
+                    <section className="text-gray-100 text-xl">
+    
+                        
+                        <section className="p-2.5 mt-1 flex items-center justify-between rounded-md ">
+                            <div className="flex flex-col ml-3 text-start">
+                                <h1 className="text-[15px] text-xl text-gray-200 font-bold">Liam </h1>
+                                <p className="text-xs">Rol</p>
+                            </div>
+                            <button onClick={()=> cerrarMenu()} id="btn-cerrar-menu">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 text-white lg:hidden cursor-pointer">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                </svg>
+
+                            </button>
+                        </section>
+    
+                        <hr className="my-2 text-gray-600"></hr>
+    
+                        <section>
+                            
+                            <a href="./inicio.html" className="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer  hover:bg-blue-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                                </svg>
+                                <span className="text-[15px] ml-4 text-gray-200">Inicio</span>
+                            </a>
+                            <a href="./usuario.html" className="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer  hover:bg-blue-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z" />
+                                </svg>
+                                <span className="text-[15px] ml-4 text-gray-200">Empleados</span>
+                            </a>
+                            <a href="./cliente.html" className="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer  hover:bg-blue-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                </svg>
+                                <span className="text-[15px] ml-4 text-gray-200">Clientes</span>
+                            </a>
+                            <a href="./servicio.html" className="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer hover:bg-blue-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+                                </svg>
+                                <span className="text-[15px] ml-4 text-gray-200">Servicios</span>
+                            </a>
+                        </section>
+    
+                        <hr className="my-2 text-gray-600"></hr>
+    
+                        <section>
+                            <a href="../index.html" className="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer  hover:bg-blue-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                                </svg>
+                                <span className="text-[15px] ml-4 text-gray-200">Cerrar Sesion</span>
+                            </a>
+                        </section>
+                        
+                    </section>
+                </nav>
+            </div>
+        )
+}
+
+export default HeaderEmpleado
