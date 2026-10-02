@@ -4,6 +4,7 @@ import HeaderInvitado from './Headers/HeaderInvitado';
 import HeaderCliente from './Headers/HeaderCliente';
 import HeaderEmpleado from './Headers/HeaderEmpleado';
 
+
 function Layout(){
     const navigate = useNavigate()
 
