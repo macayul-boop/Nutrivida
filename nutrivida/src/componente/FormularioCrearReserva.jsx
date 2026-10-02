@@ -1,5 +1,6 @@
 import { useState } from "react"
 import SelectorDia from "./SelectorDia"
+import SelectorHora from "./SelectorHora"
 
 const nutricionistas = [
     {id:2, nombre:"Carolina", apellidos:"Fuentes", horario:[{dia:"Lunes",horaInicio:"09:00",horaTermino:"17:00"},{dia:"Miercoles",horaInicio:"09:00",horaTermino:"17:00"},  { dia:"Viernes",horaInicio:"09:00",horaTermino:"17:00"}]},
@@ -27,14 +28,28 @@ function FormularioCrearReserva(){
     const [nutricionistaId, setNutricionistaId] = useState(nutricionistas[0].id)
     const [tipoConsultaId, setTipoConsultaId] = useState(tipoConsultas[0].id)
     const [fechaReserva, setFechaReserva] = useState(null)
+    const [horaReserva, setHoraReserva] = useState(null);
 
     const nutricionistaSeleccionado = nutricionistas.find(
         (n) => n.id === Number(nutricionistaId)
     );
 
+    const servicioSeleccionado = tipoConsultas.find((s) => s.id === Number(tipoConsultaId));
+
     const handleNutricionistaChange = (e) => {
         setNutricionistaId(Number(e.target.value));
         setFechaReserva(null);
+        setHoraReserva(null);
+    };
+
+    const handleServicioChange = (e) => {
+        setTipoConsultaId(Number(e.target.value));
+        setHoraReserva(null); // Al cambiar la duración del servicio, recalculamos bloques
+    };
+
+    const handleDiaChange = (nuevaFecha) => {
+        setFechaReserva(nuevaFecha);
+        setHoraReserva(null); // Limpiamos la hora al cambiar de día
     };
 
     return(
@@ -42,7 +57,7 @@ function FormularioCrearReserva(){
             <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1.5">
                     <label>Tipo Consulta</label>
-                    <select onChange={(e)=> setTipoConsultaId(e.target.value)} value={tipoConsultaId} name="tipoConsulta" className="py-2 py-2 border border-gray-300 rounded-lg">
+                    <select onChange={(e)=> handleServicioChange(e)} value={tipoConsultaId} name="tipoConsulta" className="py-2 py-2 border border-gray-300 rounded-lg">
                         {tipoConsultas.map((value) => (
                             <option key={value.id} value={value.id}>{value.nombre}</option>
                         ))}
@@ -65,9 +80,19 @@ function FormularioCrearReserva(){
                 <SelectorDia
                     horario={nutricionistaSeleccionado?.horario}
                     diaSeleccionado={fechaReserva}
-                    onSeleccionarDia={setFechaReserva}
+                    onSeleccionarDia={handleDiaChange}
+                />
+
+                <h4>Horas disponibles</h4>
+                <SelectorHora
+                    fechaSeleccionada={fechaReserva}
+                    horarioNutricionista={nutricionistaSeleccionado?.horario}
+                    duracionServicioMinutos={servicioSeleccionado?.duracion}
+                    horaSeleccionada={horaReserva}
+                    onSeleccionarHora={setHoraReserva}
                 />
             </section>
+           
             {fechaReserva && (
                 <p>Fecha elegida: {fechaReserva.toLocaleDateString()}</p>
             )}
