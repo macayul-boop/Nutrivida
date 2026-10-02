@@ -113,7 +113,7 @@ function AdministracionEmpleado(){
                     ]
                 },
                 {
-                    id:4, 
+                    id:5, 
                     rut:"123456789", 
                     nombre:"Rodrigo", 
                     apellidos:"Sepulveda", 
@@ -141,7 +141,7 @@ function AdministracionEmpleado(){
                     ]
                 },
                 {
-                    id:5, 
+                    id:6, 
                     rut:"123456789", 
                     nombre:"Felipe", 
                     apellidos:"Araya", 
