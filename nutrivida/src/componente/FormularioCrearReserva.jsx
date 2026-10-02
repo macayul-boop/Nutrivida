@@ -29,6 +29,7 @@ function FormularioCrearReserva(){
     const [tipoConsultaId, setTipoConsultaId] = useState(tipoConsultas[0].id)
     const [fechaReserva, setFechaReserva] = useState(null)
     const [horaReserva, setHoraReserva] = useState(null);
+    const [error, setError] = useState({})
 
     const nutricionistaSeleccionado = nutricionistas.find(
         (n) => n.id === Number(nutricionistaId)
@@ -52,8 +53,44 @@ function FormularioCrearReserva(){
         setHoraReserva(null); // Limpiamos la hora al cambiar de día
     };
 
+    const crearReserva = (e)=>{
+        e.preventDefault()
+
+        let nuevosErrores = {}
+
+        if(fechaReserva == null){
+            nuevosErrores.fecha = 'Selecciona un dia'
+        }
+
+        if(horaReserva == null){
+            nuevosErrores.hora = 'Selecciona una hora'
+        }
+
+        setError(nuevosErrores)
+
+        if(Object.keys(nuevosErrores).length === 0){
+
+            const sesion_activa = JSON.parse(localStorage.getItem('sesion_activa'));
+
+            const datos = {
+                idNutricionista: nutricionistaId,
+                idConsulta: tipoConsultaId,
+                idCliente: sesion_activa.id,
+                fechaReserva: fechaReserva.toLocaleDateString(),
+                horaReserva: horaReserva
+            }
+
+            setError({})
+            setFechaReserva(null)
+            setHoraReserva(null)
+            console.log(datos)
+        }else{
+            console.log("Hay un error")
+        }
+    }
+
     return(
-        <form className=" max-w-2xl mx-auto px-5 py-6 border border-gray-200 rounded-lg">
+        <form className=" max-w-2xl mx-auto mt-5 md:mt-20 px-5 py-6 border border-gray-200 rounded-lg">
             <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1.5">
                     <label>Tipo Consulta</label>
@@ -93,9 +130,15 @@ function FormularioCrearReserva(){
                 />
             </section>
            
-            {fechaReserva && (
-                <p>Fecha elegida: {fechaReserva.toLocaleDateString()}</p>
-            )}
+           <section className="flex justify-center py-5">
+                <button onClick={(e)=> crearReserva(e)} className="max-w-2xs bg-green-800 w-full rounded-2xl py-2 px-4 text-white font-semibold">
+                    Reservar
+                </button>
+           </section>
+           <section className="flex justify-center">
+                {error && <span className="text-red-500 text-center">{error.fecha}</span>}
+                {error && <span className="text-red-500 text-center">{error.dia}</span>}
+           </section> 
         </form>
     )
 

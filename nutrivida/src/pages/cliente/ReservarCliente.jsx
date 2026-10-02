@@ -3,7 +3,9 @@ import FormularioCrearReserva from "../../componente/FormularioCrearReserva"
 function ReservarCliente(){
 
     return(
-        <FormularioCrearReserva/>
+        <div className="px-5">
+            <FormularioCrearReserva/>
+        </div>
     )
 }
 
