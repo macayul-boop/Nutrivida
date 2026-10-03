@@ -1,6 +1,7 @@
 import { useState } from "react"
 import ReservaSecretario from "../../componente/ReservaSecretario"
 import FormularioCrearReservaSecreatario from "../../componente/FormularioCrearReservaSecretario"
+import ModalConfirmacion from "../../componente/ModalConfirmacion"
 
 const DATOS_RESERVAS = [
     {id:1, idCliente: 1, nombreCliente: "Matias", rutCliente: "222606497", idNutricionista: 2, nombreNutricionista: "Alavaro", fecha:"10/12/2026", horaInicio:"10:30", estado:"Reservado"}
@@ -8,13 +9,40 @@ const DATOS_RESERVAS = [
 
 function SecretarioReserva(){
 
+    // Lista de reservas
     const [reservas, setReservas] = useState(DATOS_RESERVAS)
+
+    // Para mostra el modal de crear reserva
     const [modalCrearReserva, setModalCrearReserva] = useState(false)
+
+    // Mostrar el modal para cancelar reserva
+    const [modalCancelarReserva, setModalCancelarReserva] = useState(false)
+
+    // id de la resevra que se va a cancelar
+    const [reservaCancelar, setReservaCancelar] = useState(null)
 
     const crearReserva = (datos)=>{
         setReservas([...reservas, datos])
     }
 
+    const mostrarModalCancelar = (idReserva) => {
+        setModalCancelarReserva(!modalCancelarReserva)
+        setReservaCancelar(idReserva)
+        console.log(idReserva)
+    }
+
+    const cancelarReserva = ()=>{
+        const nuevaLista = reservas.map((value)=>{
+            if(value.id === reservaCancelar){
+                value.estado = 'Cancelado'
+            }
+            return value
+        })
+
+        setReservas(nuevaLista);
+        setReservaCancelar(null)
+        setModalCancelarReserva(!modalCancelarReserva)
+    }
 
     return(
         <div>
@@ -36,12 +64,23 @@ function SecretarioReserva(){
                     </div>
                     <section>
                         {reservas.map((value)=>(
-                            <ReservaSecretario datos={value} key={value.id} onEditar={()=> console.log("Editar")} onCancelar={()=> console.log("cancelar")}/>
+                            <ReservaSecretario datos={value} key={value.id} onEditar={()=> console.log("Editar")} onCancelar={()=> mostrarModalCancelar(value.id)}/>
                         ))}
                     </section>
                 </section>
             </main>
             {modalCrearReserva && <FormularioCrearReservaSecreatario onCerrarModal={()=> setModalCrearReserva(!modalCrearReserva)} onGuardar={crearReserva}/>}
+            {modalCancelarReserva && 
+                <ModalConfirmacion 
+                    titulo={"¿Estas seguro de que quiere cancelar la reserva?"} 
+                    onCancelar={()=> {
+                        setModalCancelarReserva(!modalCancelarReserva)
+                        setReservaCancelar(null)
+                    }} 
+                    onEvento={()=> cancelarReserva()}
+                    textEvento={"Cancelar Reserva"}
+                />
+            }
         </div>
     )
 }
