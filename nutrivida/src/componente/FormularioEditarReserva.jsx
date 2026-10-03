@@ -59,18 +59,27 @@ function FormularioEditarReserva({datos, onCerrarModal, onGuardar}){
 
         if(Object.keys(nuevosErrores).length === 0){
 
-            const datosNuevos = {...datos}
+            const nuevoDato = {
+                id: datos.id, 
+                idCliente: datos.idCliente, 
+                nombreCliente: datos.nombreCliente, 
+                rutCliente: datos.rutCliente, 
+                idConsulta: datos.idConsulta, 
+                idNutricionista: datos.idNutricionista, 
+                nombreNutricionista: datos.nombreNutricionista, 
+                fecha:fechaReserva.toLocaleDateString(),
+                horaInicio:horaReserva,
+                estado: datos.estado
+            }
+            
 
-            datosNuevos.fecha = fechaReserva.toLocaleDateString()
-            datosNuevos.horaInicio = horaReserva
 
-
-            onGuardar(datosNuevos)
+            onGuardar(nuevoDato)
             setError({})
             setFechaReserva(null)
             setHoraReserva(null)
             onCerrarModal()
-            console.log(datosNuevos)
+            console.log(nuevoDato)
         }else{
             console.log("Hay un error")
         }

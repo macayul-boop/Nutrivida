@@ -25,6 +25,8 @@ function SecretarioReserva(){
     const [reservaEditar, setReservaEditar] = useState(null)
     const [modalEditarReserva, setModalEditarReserva] = useState(false)
 
+    const [textBuscador, setTextBuscador] = useState('')
+
     // Crear una reserva
     const crearReserva = (datos)=>{
         setReservas([...reservas, datos])
@@ -60,7 +62,15 @@ function SecretarioReserva(){
         console.log(reserva)
         const nuevaLista = reservas.map((value)=> value.id === reserva.id ? reserva : value)
         console.log(nuevaLista)
-        setReservas(nuevaLista)
+        setReservas(reservas.map((value)=> (value.id === reserva.id ? reserva : value)))
+    }
+
+    const buscador = ()=>{
+        if(textBuscador.trim().length === 0){
+            setReservas(DATOS_RESERVAS)
+        }else{
+            setReservas(reservas.filter((value)=> value.rutCliente === textBuscador))
+        }
     }
 
     return(
@@ -69,7 +79,16 @@ function SecretarioReserva(){
                 <section className="bg-gray-900 w-full mt-15 lg:mt-1 rounded-md">
                     <h1 className="text-3xl font-bold text-white py-4 px-8">Reservas</h1>
                 </section>
-                <section className="pt-5 flex justify-end">
+                <section className="pt-5 flex flex-col sm:flex-row justify-between">
+                    <section className="flex gap-3.5 max-w-2xl px-4">
+                        <input value={textBuscador} onChange={(e)=> setTextBuscador(e.target.value)} type="text" className="border border-gray-400 rounded-lg px-4 py-2 w-full" placeholder="222606497"/>
+                        <button onClick={()=> buscador()} className="bg-gray-200 text-gray-600 flex justify-center px-3 py-2 rounded-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                            </svg>
+                            Buscar
+                        </button>
+                    </section>
                     <button onClick={()=> setModalCrearReserva(!modalCrearReserva)} className="px-4 py-2 bg-green-800 text-white font-semibold rounded-lg">
                         Crear reserva
                     </button>
