@@ -45,7 +45,6 @@ function SelectorHora({
             (h) => h.dia.toLowerCase() === nombreDiaElegido.toLowerCase()
         );
 
-        console.log(horarioDelDia)
 
         // Si el nutricionista no trabaja este día, no generamos bloques
         if (!horarioDelDia) return [];
@@ -54,20 +53,15 @@ function SelectorHora({
         const inicioMin = horaAMinutos(horarioDelDia.horaInicio);
         const finMin = horaAMinutos(horarioDelDia.horaTermino);
 
-        console.log(inicioMin)
-        console.log(finMin)
-
         const horasGeneradas = [];
         let horaActualMin = inicioMin;
 
         // 4. Iteramos desde la hora de inicio hasta que no quepa otra cita completa
-        console.log(duracionServicioMinutos)
-        console.log(horaActualMin + duracionServicioMinutos <= finMin)
         while (horaActualMin + duracionServicioMinutos <= finMin) {
             horasGeneradas.push(minutosAHora(horaActualMin));
             // Avanzamos el reloj según la duración del servicio
             horaActualMin += duracionServicioMinutos;
-            console.log('entro')
+
         }
 
         console.log(horasGeneradas)
