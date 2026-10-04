@@ -28,8 +28,8 @@ function HeaderEmpleado({datos, onCerrarSesion}){
                         
                         <section className="p-2.5 mt-1 flex items-center justify-between rounded-md ">
                             <div className="flex flex-col ml-3 text-start">
-                                <h1 className="text-[15px] text-xl text-gray-200 font-bold">Liam </h1>
-                                <p className="text-xs">Rol</p>
+                                <h1 className="text-[15px] text-xl text-gray-200 font-bold">{datos.nombre}</h1>
+                                <p className="text-xs">{datos.rol}</p>
                             </div>
                             <button onClick={()=> cerrarMenu()} id="btn-cerrar-menu">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-7 text-white lg:hidden cursor-pointer">
@@ -100,12 +100,12 @@ function HeaderEmpleado({datos, onCerrarSesion}){
                         <hr className="my-2 text-gray-600"></hr>
     
                         <section>
-                            <a href="../index.html" className="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer  hover:bg-blue-600">
+                            <button onClick={onCerrarSesion} className="w-full p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer text-[15px] gap-4 text-gray-200 hover:bg-blue-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
                                 </svg>
-                                <span className="text-[15px] ml-4 text-gray-200">Cerrar Sesion</span>
-                            </a>
+                                Cerrar Sesion
+                            </button>
                         </section>
                         
                     </section>
