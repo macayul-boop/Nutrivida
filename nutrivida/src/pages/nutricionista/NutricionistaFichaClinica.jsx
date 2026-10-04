@@ -1,5 +1,6 @@
 import { useState } from "react"
 
+import InformeNutricionista from "../../componente/InformeNutricionista"
 
 const clientes = [
     {id:1, rut:"222606497", nombre:"Matias", apellidos: "Igancion Cayul", email:"example@gmail.com", telefono:"+56963391571", planAlimenticio: "Toma 5 litros de agua diario"},
@@ -71,8 +72,13 @@ function NutricionistaFichaClinica(){
                                 </span>
                             </section>
                         </section>
-                        <section className="bg-red-200">
-                            <p>d</p>
+                        <section>
+                            <h2 className="text-2xl lg:text-3xl font-semibold">Informes</h2>
+                            <section className="flex flex-col gap-1.5 border border-gray-300 rounded-md p-4 mt-5">
+                                {informesUsuario.map((value)=>(
+                                    <InformeNutricionista key={value.id} datos={value} />
+                                ))}
+                            </section>
                         </section>
                     </section>
                 }
