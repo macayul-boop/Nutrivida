@@ -14,37 +14,40 @@ const MAPA_DIAS = {
 
 const MESES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
-function SelectorDia({horario = [], diaSeleccionado, onSeleccionarDia}){
+function SelectorDia({horario = [], diaSeleccionado, onSeleccionarDia, diaSiguiente = true}){
 
     const diasDisponibles = useMemo(() => {
 
-    if (!horario || horario.length === 0) return [];
+      if (!horario || horario.length === 0) return [];
 
-    // Extraemos solo los nombres de los días y los convertimos a números (0 a 6)
-    const diasNumeros = horario.map((h) => MAPA_DIAS[h.dia.toLowerCase()]);
+      // Extraemos solo los nombres de los días y los convertimos a números (0 a 6)
+      const diasNumeros = horario.map((h) => MAPA_DIAS[h.dia.toLowerCase()]);
 
-    const fechas = [];
-    let fechaEvaluada = new Date();
-    fechaEvaluada.setDate(fechaEvaluada.getDate() + 1);
+      const fechas = [];
+      let fechaEvaluada = new Date();
 
-    // Buscamos hasta juntar 7 fechas
-    while (fechas.length < 7) {
-      const numeroDiaSemana = fechaEvaluada.getDay();
+      if(diaSiguiente){
+        fechaEvaluada.setDate(fechaEvaluada.getDate() + 1);
+      }
+      
+      // Buscamos hasta juntar 7 fechas
+      while (fechas.length < 7) {
+        const numeroDiaSemana = fechaEvaluada.getDay();
 
-      if (diasNumeros.includes(numeroDiaSemana)) {
-        fechas.push({
-          numeroDia: fechaEvaluada.getDate(),
-          nombreMes: MESES[fechaEvaluada.getMonth()],
-          fechaCompleta: new Date(fechaEvaluada),
-        });
+        if (diasNumeros.includes(numeroDiaSemana)) {
+          fechas.push({
+            numeroDia: fechaEvaluada.getDate(),
+            nombreMes: MESES[fechaEvaluada.getMonth()],
+            fechaCompleta: new Date(fechaEvaluada),
+          });
+        }
+
+        fechaEvaluada.setDate(fechaEvaluada.getDate() + 1);
       }
 
-      fechaEvaluada.setDate(fechaEvaluada.getDate() + 1);
-    }
-
-    console.log(fechas)
-    return fechas;
-  }, [horario]);
+      console.log(fechas)
+      return fechas;
+    }, [horario]);
 
 
   return(
