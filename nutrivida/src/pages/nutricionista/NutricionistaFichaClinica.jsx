@@ -2,6 +2,7 @@ import { useState } from "react"
 
 import InformeNutricionista from "../../componente/InformeNutricionista"
 import FormularioInforme from "../../componente/FormularioInforme"
+import DetallesInforme from "../../componente/DetallesInforme"
 
 const clientes = [
     {id:1, rut:"222606497", nombre:"Matias", apellidos: "Igancion Cayul", email:"example@gmail.com", telefono:"+56963391571", planAlimenticio: "Toma 5 litros de agua diario"},
@@ -25,6 +26,7 @@ function NutricionistaFichaClinica(){
     const [informes, setInformes] = useState(informesDatos)
     const [modalInforme, setModalInforme] = useState(false)
     const [editandoInforme, setEditandoInforme] = useState(null)
+    const [listaMostrarInforme, setListaMostrarInforme] = useState([])
     
     const eventoCrearInforme = ()=>{
         setModalInforme(!modalInforme)
@@ -39,16 +41,26 @@ function NutricionistaFichaClinica(){
         if(editandoInforme !== null){
             setInformes(informes.map((value)=> value.id === informe.id ? informe : value))
             setEditandoInforme(null)
+            setModalInforme(!modalInforme) 
         }else{
             informe.clienteId = usuarioEncontrado.id
             setInformes([...informes, informe])
-            console.log(informe)
+            setModalInforme(!modalInforme) 
         }
     }
 
     const eventoBuscar = ()=>{
         const encontrado = clientes.find((value) => value.rut === busqueda.trim())
         encontrado ? setUsuarioEncontrado(encontrado) : setUsuarioEncontrado(null)
+    }
+
+    const eventoMostrarDetalleInforme = (informe)=>{
+        if(listaMostrarInforme.find((value)=> value.id === informe.id)) return
+        setListaMostrarInforme([...listaMostrarInforme, informe])
+    }
+
+    const eventoOcultarInforme = (informeId) =>{
+        setListaMostrarInforme(listaMostrarInforme.filter((value)=> value.id !== informeId)) 
     }
 
     const informesUsuario = usuarioEncontrado
@@ -78,41 +90,53 @@ function NutricionistaFichaClinica(){
                 </section>
 
                 {usuarioEncontrado &&
-                    <section className="w-full grid grid-cols-1 lg:grid-cols-2 px-2 gap-2.5 mt-10">
-                        <section className="bg-blue-200">
-                            <h2 className="text-2xl lg:text-3xl font-semibold">{usuarioEncontrado.nombre} {usuarioEncontrado.apellidos}</h2>
-                            <section className="max-full mt-4 flex gap-4 flex-wrap">
-                                <span>
-                                    <p className="text-sm text-gray-500">Telefono</p>
-                                    <p className="text-gray-800 text-base">{usuarioEncontrado.telefono}</p>
-                                </span>
-                                <span>
-                                    <p className="text-sm text-gray-500">Email</p>
-                                    <p className="text-gray-800 text-base">{usuarioEncontrado.email}</p>
-                                </span>
-                                <span>
-                                    <p className="text-sm text-gray-500">Rut</p>
-                                    <p className="text-gray-800 text-base">{usuarioEncontrado.rut}</p>
-                                </span>
+                    <div>
+                        <section className="w-full grid grid-cols-1 lg:grid-cols-2 px-2 gap-2.5 mt-10">
+                            <section className="bg-blue-200">
+                                <h2 className="text-2xl lg:text-3xl font-semibold">{usuarioEncontrado.nombre} {usuarioEncontrado.apellidos}</h2>
+                                <section className="max-full mt-4 flex gap-4 flex-wrap">
+                                    <span>
+                                        <p className="text-sm text-gray-500">Telefono</p>
+                                        <p className="text-gray-800 text-base">{usuarioEncontrado.telefono}</p>
+                                    </span>
+                                    <span>
+                                        <p className="text-sm text-gray-500">Email</p>
+                                        <p className="text-gray-800 text-base">{usuarioEncontrado.email}</p>
+                                    </span>
+                                    <span>
+                                        <p className="text-sm text-gray-500">Rut</p>
+                                        <p className="text-gray-800 text-base">{usuarioEncontrado.rut}</p>
+                                    </span>
+                                </section>
+                            </section>
+                            <section>
+                                <h2 className="text-2xl lg:text-3xl font-semibold">Informes</h2>
+                                <section className="flex justify-end mt-2.5">
+                                    <button onClick={()=> eventoCrearInforme()} className="px-4 py-2 bg-green-700 text-white rounded-md flex gap-1.5 font-semibold cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                                        </svg>
+                                        Crear informe
+                                    </button>
+                                </section>
+                                <section className="flex flex-col gap-1.5 border border-gray-300 rounded-md p-4 mt-5">
+                                    {informesUsuario.map((value)=>(
+                                        <InformeNutricionista 
+                                            key={value.id} 
+                                            datos={value} 
+                                            onEditar={()=> eventoEditarInforme(value)}
+                                            onMostrar={()=> eventoMostrarDetalleInforme(value)}
+                                        />
+                                    ))}
+                                </section>
                             </section>
                         </section>
-                        <section>
-                            <h2 className="text-2xl lg:text-3xl font-semibold">Informes</h2>
-                            <section className="flex justify-end mt-2.5">
-                                <button onClick={()=> eventoCrearInforme()} className="px-4 py-2 bg-green-700 text-white rounded-md flex gap-1.5 font-semibold cursor-pointer">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-                                    </svg>
-                                    Crear informe
-                                </button>
-                            </section>
-                            <section className="flex flex-col gap-1.5 border border-gray-300 rounded-md p-4 mt-5">
-                                {informesUsuario.map((value)=>(
-                                    <InformeNutricionista key={value.id} datos={value} onEditar={()=> eventoEditarInforme(value)}/>
-                                ))}
-                            </section>
+                        <section className="flex flex-wrap gap-2.5 px-2 mt-8">
+                            {listaMostrarInforme.map((value)=>(
+                                <DetallesInforme key={value.id} datos={value} onCerrar={()=> eventoOcultarInforme(value.id)}/>
+                            ))}
                         </section>
-                    </section>
+                    </div>
                 }
 
             </main>
