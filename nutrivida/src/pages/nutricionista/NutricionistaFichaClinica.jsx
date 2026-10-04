@@ -46,7 +46,6 @@ function NutricionistaFichaClinica(){
         }
     }
 
-
     const eventoBuscar = ()=>{
         const encontrado = clientes.find((value) => value.rut === busqueda.trim())
         encontrado ? setUsuarioEncontrado(encontrado) : setUsuarioEncontrado(null)
@@ -119,7 +118,11 @@ function NutricionistaFichaClinica(){
             </main>
             {modalInforme && 
                 <FormularioInforme 
-                    onCerrarModal={()=>setModalInforme(!modalInforme)}
+                    onCerrarModal={(e)=> {
+                        e.preventDefault()
+                        setModalInforme(!modalInforme) 
+                        setEditandoInforme(null)
+                    }}
                     onGuardar={guardarInforme}
                     editandoInforme={editandoInforme}
                 />

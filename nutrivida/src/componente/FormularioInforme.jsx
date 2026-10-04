@@ -9,9 +9,17 @@ function FormularioInforme({onCerrarModal, onGuardar, editandoInforme}){
     const [descripcion, setDescripcion] = useState('')
     const [error, setError] = useState({})
 
+    /* eslint-disable react-hooks/set-state-in-effect */
     useEffect(()=>{
+        if(editandoInforme){
+            setPeso(editandoInforme.peso.toString())
+            setTalla(editandoInforme.talla.toString())
+            setCircunferenciaCircular(editandoInforme.circunferenciaCintura.toString())
+            setDescripcion(editandoInforme.descripcion)
+        }
 
-    }, [])
+    }, [editandoInforme])
+    /* eslint-disable react-hooks/set-state-in-effect */
 
     const validarFormulario = (e)=>{
         e.preventDefault()
@@ -51,8 +59,8 @@ function FormularioInforme({onCerrarModal, onGuardar, editandoInforme}){
             console.log("El formulario se completo con exito")
             const fechaAhora = new Date()
             const datos = {
-                id: editandoInforme.id || Date.now(),
-                clienteId: null,
+                id: editandoInforme?.id || Date.now(),
+                clienteId: editandoInforme?.clienteId || null,
                 fecha: fechaAhora.toLocaleDateString(),
                 peso: pesoNumerico,
                 talla: tallaNumerica,
@@ -106,7 +114,7 @@ function FormularioInforme({onCerrarModal, onGuardar, editandoInforme}){
                     {error.descripcion && <span className="text-sm text-red-500">{error.descripcion}</span>}
                 </section>
                 <section className="flex justify-end gap-3.5 mt-5">
-                    <button onClick={onCerrarModal} className="px-4 py-2 bg-gray-300 text-gray-600 rounded-lg cursor-pointer">
+                    <button onClick={(e)=> onCerrarModal(e)} className="px-4 py-2 bg-gray-300 text-gray-600 rounded-lg cursor-pointer">
                         Cancelar
                     </button>
                     <button onClick={(e)=> validarFormulario(e)} className="px-4 py-2 bg-green-700 text-white font-semibold rounded-lg cursor-pointer">
