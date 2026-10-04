@@ -174,8 +174,6 @@ if(existeDatos == null ){
     localStorage.setItem('usuarios', JSON.stringify(listaUsuario));
 }
 
-const DATOS_GUARDADOS = JSON.parse(localStorage.getItem('usuarios'));
-
 function FormularioRegistroCliente(){
     const navigate = useNavigate()
 
@@ -208,6 +206,8 @@ function FormularioRegistroCliente(){
     }
 
     const iniciarSesion = ()=>{
+
+        const DATOS_GUARDADOS = JSON.parse(localStorage.getItem('usuarios'));
         const usuarioFiltrado = DATOS_GUARDADOS.find((value)=> value.email == email && value.contrasena == contrasena)
         console.log(usuarioFiltrado)
         console.log("Emial: ", email)
