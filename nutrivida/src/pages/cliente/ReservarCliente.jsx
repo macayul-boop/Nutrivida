@@ -1,7 +1,11 @@
+import FormularioCrearReserva from "../../componente/FormularioCrearReserva"
+
 function ReservarCliente(){
 
     return(
-        <h1>Pagina de reserva</h1>
+        <div className="px-5">
+            <FormularioCrearReserva/>
+        </div>
     )
 }
 

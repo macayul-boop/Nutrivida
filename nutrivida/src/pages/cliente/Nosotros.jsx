@@ -1,4 +1,5 @@
 import FooterCliente from "../../componente/Footers/FooterCliente";
+import FormularioContactanos from "../../componente/FormularioContactanos";
 
 function Nosotros(){
     return(
@@ -92,33 +93,12 @@ function Nosotros(){
                 </section>
             </section>
 
-            <section id="contacto" className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-15 lg:mt-35">
-                <h2 className="text-center text-3xl sm:text-4xl font-bold text-emerald-700">Contactanos</h2>
-                <p className="text-center text-lg mt-4 text-slate-800">¿Quieres ponerte en contacto con nosotros? Hablanos mediante el formualrio</p>
-                <form className="max-w-3xl mx-auto mt-10 p-5 border border-gray-300 rounded-lg" id="formulario">
-                    <div className="w-full grid grid-cols-1 md:grid-cols-2 md:gap-5">
-                        <div className="flex flex-col">
-                            <label for="nombre">Nombre</label>
-                            <input type="text" placeholder="Nombre" id="nombre" name="nombre" className="border border-gray-300 rounded-md p-2 my-2"></input>
-                        </div>
-                        <div className="flex flex-col">
-                            <label for="email">Email</label>
-                            <input type="text" placeholder="Email" id="email" name="email" className="border border-gray-300 rounded-md p-2 my-2"></input>
-                        </div>
-                    </div>
-                    <div className="flex flex-col">
-                        <label className="py-1">Mensaje</label>
-                        <textarea id="text-area" name="mensaje" placeholder="Mensaje" className="p-2 border border-gray-300 rounded-md resize-none min-h-50"></textarea>
-                    </div>
-                    <div className="w-full flex justify-center items-center mt-5">
-                        <button type="submit" className="py-3 px-9 bg-emerald-700 text-white font-semibold rounded-3xl">Enviar</button>
-                    </div>
-                </form>
-            </section>
+            
+            <FormularioContactanos/>
 
             <FooterCliente/>
         </>
     )
 }
 
-export default Nosotros
+export default Nosotros;

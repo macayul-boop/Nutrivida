@@ -21,15 +21,15 @@ function HeaderCliente({datos, onCerrarSesion}){
     
                     <nav id="menu" className={`w-full lg:flex lg:w-auto lg:items-center mt-4 lg:mt-0 ${menuAbierto ? '' : 'hidden'}`}>
                         <ul className="flex flex-col lg:flex-row gap-4 font-medium">
-                            <li><Link to={"/"} className="block hover:text-emerald-500">Inicio</Link></li>
-                            <li><Link to={"/servicios"} className="block hover:text-emerald-500">Servicios</Link></li>
-                            <li><Link to={"/nosotros"} className="block hover:text-emerald-500">Nosotros</Link></li>
+                            <li className="flex lg:items-center"><Link to={"/"} className="block hover:text-emerald-500">Inicio</Link></li>
+                            <li className="flex lg:items-center"><Link to={"/servicios"} className="block hover:text-emerald-500">Servicios</Link></li>
+                            <li className="flex lg:items-center"><Link to={"/nosotros"} className="block hover:text-emerald-500">Nosotros</Link></li>
 
-                            <li><Link to={"/tusReservas"} className="block hover:text-emerald-500">Tus reservas</Link></li>
-                            <li><Link to={"/reservar"} className="block hover:text-emerald-500">Reservar</Link></li>
-                            <div>
-                                <p>Nombre</p>
-                                <button>Cerrar Sesion</button>
+                            <li className="flex lg:items-center"><Link to={"/tusReservas"} className="block hover:text-emerald-500">Tus reservas</Link></li>
+                            <li className="flex lg:items-center"><Link to={"/reservar"} className="block hover:text-emerald-500">Reservar</Link></li>
+                            <div className="max-w-[120px] flex flex-col justify-center items-center ">
+                                <p>{datos.nombre}</p>
+                                <button onClick={onCerrarSesion} className="cursor-pointer bg-green-700 tetx-white rounded-sm px-2 text-white">Cerrar Sesion</button>
                             </div>
                         </ul>
                     </nav>

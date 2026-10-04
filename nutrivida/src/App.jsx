@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Router } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './componente/Layout';
 import Inicio from './pages/cliente/InicioCliente';
 import Login from './pages/cliente/Login';
@@ -10,6 +10,8 @@ import ServiciosCliente from './pages/cliente/ServiciosCliente';
 import TusReservas from './pages/cliente/TusReservas';
 import AdministracionServicios from './pages/administracion/AdministracionServicios';
 import AdministracionInicio from './pages/administracion/AdministracionInicio';
+import SecretarioReserva from './pages/secretario/SecretarioReserva';
+import SecretarioHorario from './pages/secretario/SecretarioHorario';
 
 function App() {
 
@@ -32,6 +34,8 @@ function App() {
           <Route path='/administracion/inicio' element={<AdministracionInicio />} />
           <Route path='/administracion/empleados' element={<AdministracionEmpleado />} />
           <Route path='/administracion/servicios' element={<AdministracionServicios />} />
+          <Route path='/secretario/reserva' element={<SecretarioReserva/>}/>
+          <Route path='/secretario/horario' element={<SecretarioHorario/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

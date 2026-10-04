@@ -143,6 +143,28 @@ const listaUsuario = [
                             horaTermino:"19:00"
                         }
                     ]
+                },
+                {
+                    id:6, 
+                    rut:"123456789", 
+                    nombre:"Benjamin", 
+                    apellidos:"Araya", 
+                    telefono:"+56912345678", 
+                    email: "secretario1@gmail.com", 
+                    contrasena:"1234567", 
+                    rol:"Secretario", 
+                    estado:"Activo"
+                },
+                {
+                    id:7, 
+                    rut:"123456789", 
+                    nombre:"Eduardo", 
+                    apellidos:"Araya", 
+                    telefono:"+56912345678", 
+                    email: "cliente@gmail.com", 
+                    contrasena:"1234567", 
+                    rol:"Cliente", 
+                    estado:"Activo"
                 }
             ]
 
@@ -186,16 +208,20 @@ function FormularioRegistroCliente(){
     }
 
     const iniciarSesion = ()=>{
-        const usuarioFiltrado = DATOS_GUARDADOS.filter((value)=> value.email == email && value.contrasena == contrasena)
+        const usuarioFiltrado = DATOS_GUARDADOS.find((value)=> value.email == email && value.contrasena == contrasena)
         console.log(usuarioFiltrado)
-        
+        console.log("Emial: ", email)
+        console.log("COntraseña: ", contrasena)
+        console.log(typeof usuarioFiltrado)
+
         if(!usuarioFiltrado){
             console.log("usuario no encontrado")
-        }{
+        }else{
+            console.log("ENTROO ACA")
             const sesionActiva = {
-                id: usuarioFiltrado[0].id, 
-                nombre: usuarioFiltrado[0].nombre, 
-                rol: usuarioFiltrado[0].rol
+                id: usuarioFiltrado.id, 
+                nombre: usuarioFiltrado.nombre, 
+                rol: usuarioFiltrado.rol
             }
 
             localStorage.setItem('sesion_activa', JSON.stringify(sesionActiva));
@@ -209,6 +235,7 @@ function FormularioRegistroCliente(){
                 console.log("Cambio a vista nutricionista")
             }else if(sesionActiva.rol === 'Secretario'){
                 console.log("Cambio a vista Secretario")
+                navigate("/secretario/reserva");
             }
 
             setContrasena('')
