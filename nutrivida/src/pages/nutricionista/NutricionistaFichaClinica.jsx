@@ -5,8 +5,8 @@ import FormularioInforme from "../../componente/FormularioInforme"
 import DetallesInforme from "../../componente/DetallesInforme"
 
 const clientes = [
-    {id:1, rut:"222606497", nombre:"Matias", apellidos: "Igancion Cayul", email:"example@gmail.com", telefono:"+56963391571", planAlimenticio: "Toma 5 litros de agua diario"},
-    {id:2, rut:"123456789", nombre:"Gaspar", apellidos: "Vergara Palavecino", email:"example@gmail.com", telefono:"+56963391571", planAlimenticio: "Come 3 galletas a la semana"}
+    {id:1, rut:"222606497", nombre:"Matias", apellidos: "Igancion Cayul", email:"example@gmail.com", telefono:"+56963391571", planAlimentacion: "Toma 5 litros de agua diario"},
+    {id:2, rut:"123456789", nombre:"Gaspar", apellidos: "Vergara Palavecino", email:"example@gmail.com", telefono:"+56963391571", planAlimentacion: "Come 3 galletas a la semana"}
 ]
 
 const informesDatos = [
@@ -28,6 +28,32 @@ function NutricionistaFichaClinica(){
     const [editandoInforme, setEditandoInforme] = useState(null)
     const [listaMostrarInforme, setListaMostrarInforme] = useState([])
     
+    const [esEditable, setEsEditable] = useState(false);
+    const [tempTexto, setTempTexto] = useState('');
+
+    // Al hacer clic en "Editar"
+    const eventoEditarPlan = () => {
+        // Cargamos el plan actual del usuario en la variable temporal
+        setTempTexto(usuarioEncontrado.planAlimentacion);
+        setEsEditable(true);
+    };
+
+    // Al hacer clic en "Guardar"
+    const eventoGuardarPlan = () => {
+        // Actualizamos el objeto del usuario directamente en el estado principal
+        setUsuarioEncontrado({
+        ...usuarioEncontrado,
+        planAlimentacion: tempTexto
+        });
+        setEsEditable(false);
+    };
+
+    // Al hacer clic en "Cancelar"
+    const eventoCancelarPlan = () => {
+        setEsEditable(false);
+    };
+
+
     const eventoCrearInforme = ()=>{
         setModalInforme(!modalInforme)
     }
@@ -91,8 +117,8 @@ function NutricionistaFichaClinica(){
 
                 {usuarioEncontrado &&
                     <div>
-                        <section className="w-full grid grid-cols-1 lg:grid-cols-2 px-2 gap-2.5 mt-10">
-                            <section className="bg-blue-200">
+                        <section className="w-full grid grid-cols-1 lg:grid-cols-2 px-2 gap-10 mt-10">
+                            <section className="">
                                 <h2 className="text-2xl lg:text-3xl font-semibold">{usuarioEncontrado.nombre} {usuarioEncontrado.apellidos}</h2>
                                 <section className="max-full mt-4 flex gap-4 flex-wrap">
                                     <span>
@@ -108,6 +134,32 @@ function NutricionistaFichaClinica(){
                                         <p className="text-gray-800 text-base">{usuarioEncontrado.rut}</p>
                                     </span>
                                 </section>
+                                <section className="mt-5">
+                                    <h3 className="text-lg font-semibold">Plan nutricional</h3>
+                                    <section className="flex justify-end">
+                                        {!esEditable 
+                                        ? (<button onClick={eventoEditarPlan} className="px-4 py-1.5 bg-blue-800 text-white rounded-md text-sm">Editar</button>)
+                                        : (
+                                            <div className="flex gap-1.5">
+                                                <button onClick={eventoCancelarPlan} className="px-4 py-1.5 bg-gray-300 text-gray-600 rounded-md text-sm">Cancelar</button>
+                                                <button onClick={eventoGuardarPlan} className="px-4 py-1.5 bg-green-800 text-white rounded-md text-sm">Guardar</button>
+                                            </div>
+                                        )
+                                    }
+                                    </section>
+                                </section>
+                                <section className="mt-2.5">
+                                    {esEditable ? (
+                                        <textarea 
+                                            className="w-full h-44 resize-none border border-gray-200 rounded-lg py-2 px-4"
+                                            placeholder="Agrega información extra ac..."
+                                            value={tempTexto}
+                                            onChange={(e)=> setTempTexto(e.target.value)}
+                                        />
+                                    ) : (
+                                        <p className="border border-gray-300 px-4 rounded-md">{usuarioEncontrado.planAlimentacion || "El paciente no tiene un plan de alimentación asignado."}</p>
+                                    )}
+                                </section>
                             </section>
                             <section>
                                 <h2 className="text-2xl lg:text-3xl font-semibold">Informes</h2>
@@ -119,7 +171,7 @@ function NutricionistaFichaClinica(){
                                         Crear informe
                                     </button>
                                 </section>
-                                <section className="flex flex-col gap-1.5 border border-gray-300 rounded-md p-4 mt-5">
+                                <section className="flex flex-col gap-1.5 border border-gray-300 rounded-md p-4 mt-5 max-h-[160px] overflow-y-scroll">
                                     {informesUsuario.map((value)=>(
                                         <InformeNutricionista 
                                             key={value.id} 

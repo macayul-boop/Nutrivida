@@ -68,7 +68,7 @@ function FormularioInforme({onCerrarModal, onGuardar, editandoInforme}){
                 descripcion: descripcion
             }
             onGuardar(datos)
-            onCerrarModal()
+            onCerrarModal(e)
         }else{
             console.log("Hay un error: ", error)
         }
