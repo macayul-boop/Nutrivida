@@ -12,6 +12,8 @@ import AdministracionServicios from './pages/administracion/AdministracionServic
 import AdministracionInicio from './pages/administracion/AdministracionInicio';
 import SecretarioReserva from './pages/secretario/SecretarioReserva';
 import SecretarioHorario from './pages/secretario/SecretarioHorario';
+import NutricionistaAgenda from './pages/nutricionista/NutricionistaAgenda';
+import NutricionistaFichaClinica from './pages/nutricionista/NutricionistaFichaClinica';
 
 function App() {
 
@@ -36,6 +38,9 @@ function App() {
           <Route path='/administracion/servicios' element={<AdministracionServicios />} />
           <Route path='/secretario/reserva' element={<SecretarioReserva/>}/>
           <Route path='/secretario/horario' element={<SecretarioHorario/>}/>
+          <Route path='/nutricionista/agenda' element={<NutricionistaAgenda/>}/>
+          <Route path='/nutricionista/fichaClinica' element={<NutricionistaFichaClinica/>}/>
+
         </Route>
       </Routes>
     </BrowserRouter>

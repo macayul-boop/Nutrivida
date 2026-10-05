@@ -232,7 +232,7 @@ function FormularioRegistroCliente(){
                 navigate("/administracion/inicio");
                 console.log("Entro al cmabio de vista de admin")
             }else if(sesionActiva.rol === 'Nutricionista'){
-                console.log("Cambio a vista nutricionista")
+                navigate("/nutricionista/agenda")
             }else if(sesionActiva.rol === 'Secretario'){
                 console.log("Cambio a vista Secretario")
                 navigate("/secretario/reserva");
