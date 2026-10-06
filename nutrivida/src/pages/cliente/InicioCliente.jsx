@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import FooterCliente from "../../componente/Footers/FooterCliente";
 
+
 function InicioCliente(){
+
+    const usuarioActivo = JSON.parse(localStorage.getItem('sesion_activa'));
+
     return(
         <>
             <main className="w-full bg-gray-50">
@@ -13,7 +17,9 @@ function InicioCliente(){
                         <h2 className="text-3xl md:text-5xl font-bold text-white text-center ">Clinica Nutricional Nutrivida</h2>
                         <p className="text-slate-300 text-lg">Asesoría nutricional personalizada</p>
                     </div>
-                    <a href="./paciente/reservar.html" class="bg-white text-emerald-700 font-semibold hover:bg-emerald-50 py-4 px-6 rounded-3xl mt-6">Reservar Cita</a>
+                    {usuarioActivo 
+                    ? (<Link  to={"/reservar"} className="bg-white text-emerald-700 font-semibold hover:bg-emerald-50 py-4 px-6 rounded-3xl mt-6">Reservar Cita</Link>)
+                    : (<Link to={"/login"} className="bg-white text-emerald-700 font-semibold hover:bg-emerald-50 py-4 px-6 rounded-3xl mt-6">Reservar Cita</Link>)}
                 </section>
             </section>
 

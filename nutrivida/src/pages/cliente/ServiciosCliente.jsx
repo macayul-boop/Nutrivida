@@ -1,16 +1,94 @@
-import {listaTipoConsultas} from '../../componente/TipoConsultas';
-import {listaTipoEvaluaciones} from '../../componente/TipoEvaluaciones';
 import FooterCliente from "../../componente/Footers/FooterCliente";
+import { Link } from "react-router-dom"
+
+
+export const listaTipoConsultas = [
+    {
+        id:1,
+        nombre: "Primera consulta nutricional",
+        detalle: "Evaluación inicial: anamnesis, antropometría completa y diseño del primer plan alimenticio.",
+        precio: 35000,
+        duracion: 50
+    },
+    {
+        id:2,
+        nombre: "Control nutricional",
+        detalle: "Seguimiento mensual: medición de indicadores y ajuste del plan vigente.",
+        precio: 25000,
+        duracion: 30
+    },
+    {
+        id:3,
+        nombre: "Control nutricional quincenal",
+        detalle: "Seguimiento intensivo cada 15 días. Recomendado en los primeros 2 meses.",
+        precio: 22000,
+        duracion: 30
+    },{
+        id:4,
+        nombre: "Teleconsulta nutricional",
+        detalle: "Consulta de seguimiento vía videollamada. Requiere contar con consulta presencial previa.",
+        precio: 20000,
+        duracion: 30
+    },
+    {
+        id:5,
+        nombre: "Consulta de urgencia",
+        detalle: "Para pacientes que requieren atención fuera de su control habitual.",
+        precio: 28000,
+        duracion: 30
+    }
+
+]
+
+
+export const listaTipoEvaluaciones = [
+    {
+        id:1,
+        nombre: "Antropometría completa",
+        detalle: "Peso, talla, IMC, circunferencia de cintura, cadera, brazo y % de grasa corporal con bioimpedanciometría.",
+        precio: 18000,
+        duracion: 20
+    },
+    {
+        id:2,
+        nombre: "Bioimpedanciometría",
+        detalle: "Medición de composición corporal: masa grasa, masa muscular, agua corporal y edad metabólica.",
+        precio: 12000,
+        duracion: 15
+    },
+    {
+        id:3,
+        nombre: "Encuesta de hábitos alimentarios",
+        detalle: "Análisis del patrón alimentario actual. Identificación de déficit y excesos nutricionales.",
+        precio: 10000,
+        duracion: 20
+    },
+    {
+        id:4,
+        nombre: "Análisis de exámenes de laboratorio",
+        detalle: "Interpretación de hemograma, perfil bioquímico y lipídico en contexto nutricional.",
+        precio: 15000,
+        duracion: 20
+    }
+]
+
+
 
 
 function ServiciosCliente(){
+
+    const usuarioActivo = JSON.parse(localStorage.getItem('sesion_activa'));
+
     return(
         <>
         <section className="w-full">
             <section className="py-20 flex flex-col justify-center items-center bg-emerald-700" >
                 <h2 className="text-5xl font-bold text-white">Servicios</h2>
                 <p className="text-slate-300 text-md mt-2 w-[23rem] text-center">Atención personalizada presencial en Temuco o mediante Telemedicina.</p>
-                <a href="./reservar.html" className="mt-5 py-3 px-8 border-2 border-emerald-300 rounded-lg text-emerald-300 hover:bg-emerald-300 hover:text-emerald-800 font-medium">Reservar</a>
+                {usuarioActivo 
+                ? (<Link  to={"/reservar"} className="mt-5 py-3 px-8 border-2 border-emerald-300 rounded-lg text-emerald-300 hover:bg-emerald-300 hover:text-emerald-800 font-medium">Reservar</Link>)
+                : (<Link to={"/login"} className="mt-5 py-3 px-8 border-2 border-emerald-300 rounded-lg text-emerald-300 hover:bg-emerald-300 hover:text-emerald-800 font-medium">Reservar</Link>)}
+                
             </section>
 
             
