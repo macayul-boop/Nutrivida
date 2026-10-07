@@ -103,14 +103,16 @@ function FormularioInforme({onCerrarModal, onGuardar, editandoInforme}){
                     />
                 </section>
                 <section className="flex flex-col gap-1.5 mt-2">
-                    <label>Descripcion</label>
-                    <textarea 
+                    <label className="flex flex-col">Descripcion
+                        <textarea 
                         className="w-full h-44 resize-none border border-gray-200 rounded-lg py-2 px-4"
                         placeholder="Agrega información extra ac..."
                         value={descripcion}
                         onChange={(e)=> setDescripcion(e.target.value)}
-                    >
-                    </textarea>
+                        >
+                        </textarea>
+                    </label>
+                    
                     {error.descripcion && <span className="text-sm text-red-500">{error.descripcion}</span>}
                 </section>
                 <section className="flex justify-end gap-3.5 mt-5">
