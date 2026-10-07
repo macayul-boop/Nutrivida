@@ -31,16 +31,12 @@ function NutricionistaFichaClinica(){
     const [esEditable, setEsEditable] = useState(false);
     const [tempTexto, setTempTexto] = useState('');
 
-    // Al hacer clic en "Editar"
     const eventoEditarPlan = () => {
-        // Cargamos el plan actual del usuario en la variable temporal
         setTempTexto(usuarioEncontrado.planAlimentacion);
         setEsEditable(true);
     };
 
-    // Al hacer clic en "Guardar"
     const eventoGuardarPlan = () => {
-        // Actualizamos el objeto del usuario directamente en el estado principal
         setUsuarioEncontrado({
         ...usuarioEncontrado,
         planAlimentacion: tempTexto
@@ -48,7 +44,6 @@ function NutricionistaFichaClinica(){
         setEsEditable(false);
     };
 
-    // Al hacer clic en "Cancelar"
     const eventoCancelarPlan = () => {
         setEsEditable(false);
     };
@@ -152,7 +147,7 @@ function NutricionistaFichaClinica(){
                                     {esEditable ? (
                                         <textarea 
                                             className="w-full h-44 resize-none border border-gray-200 rounded-lg py-2 px-4"
-                                            placeholder="Agrega información extra ac..."
+                                            placeholder="Agrega información extra..."
                                             value={tempTexto}
                                             onChange={(e)=> setTempTexto(e.target.value)}
                                         />
