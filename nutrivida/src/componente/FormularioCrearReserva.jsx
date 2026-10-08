@@ -45,12 +45,12 @@ function FormularioCrearReserva(){
 
     const handleServicioChange = (e) => {
         setTipoConsultaId(Number(e.target.value));
-        setHoraReserva(null); // Al cambiar la duración del servicio, recalculamos bloques
+        setHoraReserva(null); 
     };
 
     const handleDiaChange = (nuevaFecha) => {
         setFechaReserva(nuevaFecha);
-        setHoraReserva(null); // Limpiamos la hora al cambiar de día
+        setHoraReserva(null); 
     };
 
     const crearReserva = (e)=>{
@@ -93,20 +93,22 @@ function FormularioCrearReserva(){
         <form className=" max-w-2xl mx-auto mt-5 md:mt-20 px-5 py-6 border border-gray-200 rounded-lg">
             <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="flex flex-col gap-1.5">
-                    <label>Tipo Consulta</label>
-                    <select onChange={(e)=> handleServicioChange(e)} value={tipoConsultaId} name="tipoConsulta" className="py-2 py-2 border border-gray-300 rounded-lg">
-                        {tipoConsultas.map((value) => (
-                            <option key={value.id} value={value.id}>{value.nombre}</option>
-                        ))}
-                    </select>
+                    <label className="flex flex-col">Tipo Consulta
+                        <select onChange={(e)=> handleServicioChange(e)} value={tipoConsultaId} name="tipoConsulta" className="py-2 py-2 border border-gray-300 rounded-lg">
+                            {tipoConsultas.map((value) => (
+                                <option key={value.id} value={value.id}>{value.nombre}</option>
+                            ))}
+                        </select>
+                    </label>
                 </div>
                 <div className="flex flex-col gap-1.5">
-                    <label>Nutricionista</label>
-                    <select onChange={(e)=> handleNutricionistaChange(e)} value={nutricionistaId} name="nutricionista" className="py-2 py-2 border border-gray-300 rounded-lg">
-                        {nutricionistas.map((value)=>(
-                            <option key={value.id} value={value.id}>{value.nombre}  {value.apellidos}</option>
-                        ))}
-                    </select>
+                    <label className="flex flex-col">Nutricionista
+                        <select onChange={(e)=> handleNutricionistaChange(e)} value={nutricionistaId} name="nutricionista" className="py-2 py-2 border border-gray-300 rounded-lg">
+                            {nutricionistas.map((value)=>(
+                                <option key={value.id} value={value.id}>{value.nombre}  {value.apellidos}</option>
+                            ))}
+                        </select>
+                    </label>
                 </div>
             </section>
             <section className="text-center">
