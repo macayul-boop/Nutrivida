@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Servicio from '../../componente/Servicio';
-
+import FormularioServicio from '../../componente/FormularioServicio';
 const SERVICIOS_INICIALES = [
     {
         id:1,
@@ -34,7 +34,10 @@ const SERVICIOS_INICIALES = [
 
 function AdministracionServicios(){
 
-    const [listaServicios] = useState(SERVICIOS_INICIALES)
+    const [listaServicios, setListaServicios] =useState(SERVICIOS_INICIALES)
+    const [modal, setModal] = useState(false)
+    const toggle = ()=>{setModal(!modal)}
+    const guardarServicio = (servicio)=>{setListaServicios([...listaServicios,servicio])}
 
     return(
         <div>
@@ -44,8 +47,15 @@ function AdministracionServicios(){
                         Servicios
                     </h1>
                 </section>
-
-                <section className="max-w-7xl w-full mt-4 h-[25rem] overflow-auto border border-gray-200 rounded-lg">
+                <section className="w-full flex justify-end py-4">
+                    <button
+                        onClick={()=> toggle()}
+                        className="px-4 py-2 bg-green-800 text-white font-semibold rounded-lg cursor-pointer"
+                    >
+                        Crear servicio
+                    </button>
+                </section>
+                <section className="max-w-7xl w-full h-[25rem] overflow-auto border border-gray-200 rounded-lg">
                     <div className="min-w-[700px]">
                         <section className="w-full grid grid-cols-4 py-2 bg-gray-900 text-white px-4">
                             <p>Nombre</p>
@@ -65,6 +75,12 @@ function AdministracionServicios(){
                     </div>
                 </section>
             </main>
+            {modal &&
+            <FormularioServicio
+                onCerrarModal={()=> toggle()}
+                onGuardar={guardarServicio}
+            />
+        }
         </div>
     )
 
