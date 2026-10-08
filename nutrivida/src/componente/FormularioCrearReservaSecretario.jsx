@@ -48,12 +48,12 @@ function FormularioCrearReservaSecreatario({onCerrarModal, onGuardar}){
 
     const handleServicioChange = (e) => {
         setTipoConsultaId(Number(e.target.value));
-        setHoraReserva(null); // Al cambiar la duración del servicio, recalculamos bloques
+        setHoraReserva(null); 
     };
 
     const handleDiaChange = (nuevaFecha) => {
         setFechaReserva(nuevaFecha);
-        setHoraReserva(null); // Limpiamos la hora al cambiar de día
+        setHoraReserva(null); 
     };
 
     const cancelar = (e)=>{
@@ -113,33 +113,51 @@ function FormularioCrearReservaSecreatario({onCerrarModal, onGuardar}){
         <div className="fixed inset-0 bg-black/60 z-50 flex items-start justify-center p-4 overflow-y-scroll">
             <form className="bg-white max-w-2xl mx-auto mt-5 md:mt-20 px-5 py-6 border border-gray-200 rounded-lg">
                 <section className="flex flex-col gap-1.5">
-                    <label>Cliente</label>
+                    <label className="flex flex-col">
+                        Cliente
                         <select onChange={(e)=> setClienteId(e.target.value)} value={clienteId} name="tipoConsulta" className="py-2 py-2 border border-gray-300 rounded-lg">
                             {clientes.map((value) => (
                                 <option key={value.id} value={value.id}>{value.nombre} {value.apellidos}</option>
                             ))}
                         </select>
+                    </label>
+                        
                 </section>
                 <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="flex flex-col gap-1.5">
-                        <label>Tipo Consulta</label>
-                        <select onChange={(e)=> handleServicioChange(e)} value={tipoConsultaId} name="tipoConsulta" className="py-2 py-2 border border-gray-300 rounded-lg">
-                            {tipoConsultas.map((value) => (
-                                <option key={value.id} value={value.id}>{value.nombre}</option>
-                            ))}
-                        </select>
+                        <label className="flex flex-col">Tipo Consulta
+                            <select onChange={(e)=> handleServicioChange(e)} value={tipoConsultaId} name="tipoConsulta" className="py-2 py-2 border border-gray-300 rounded-lg">
+                                {tipoConsultas.map((value) => (
+                                    <option key={value.id} value={value.id}>{value.nombre}</option>
+                                ))}
+                            </select>
+                        </label>
+                        
                     </div>
                     <div className="flex flex-col gap-1.5">
-                        <label>Nutricionista</label>
-                        <select onChange={(e)=> handleNutricionistaChange(e)} value={nutricionistaId} name="nutricionista" className="py-2 py-2 border border-gray-300 rounded-lg">
+                        <label className="flex flex-col">Nutricionista
+                            <select onChange={(e)=> handleNutricionistaChange(e)} value={nutricionistaId} name="nutricionista" className="py-2 py-2 border border-gray-300 rounded-lg">
                             {nutricionistas.map((value)=>(
-                                <option key={value.id} value={value.id}>{value.nombre}  {value.apellidos}</option>
-                            ))}
-                        </select>
+                                    <option key={value.id} value={value.id}>{value.nombre}  {value.apellidos}</option>
+                                ))}
+                            </select>
+                        </label>
+                        
                     </div>
                 </section>
-                <section className="text-center">
-                    <p>Informacion</p>
+                <section className="flex justify-between items-center px-2 sm:px-10 md:px-25 my-5">
+                    <div>
+                        <p className="text-sm text-gray-600">Modalidad</p>
+                        <p className="text-gray-950">{servicioSeleccionado.modalidad}</p>
+                    </div>
+                    <div>
+                        <p className="text-sm text-gray-600">Precio</p>
+                        <p className="text-gray-950">${servicioSeleccionado.precio}</p>
+                    </div>
+                    <div>
+                        <p className="text-sm text-gray-600">Duracion</p>
+                        <p className="text-gray-950">{servicioSeleccionado.duracion} min</p>
+                    </div>
                 </section>
                 <section>
                     <h4>Dias disponibles</h4>
