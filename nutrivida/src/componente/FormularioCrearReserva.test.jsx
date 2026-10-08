@@ -6,7 +6,7 @@ import FormularioCrearReserva from './FormularioCrearReserva'
 describe('FormularioCrearReserva', () => {
 
   beforeEach(() => {
-    const usuarioSimulado = { id: 10, nombre: 'Matias' }
+    const usuarioSimulado = { id: 10, nombre: 'Matias', rol:"Cliente"}
     localStorage.setItem('sesion_activa', JSON.stringify(usuarioSimulado))
   })
 

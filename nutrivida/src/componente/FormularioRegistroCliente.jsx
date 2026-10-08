@@ -209,15 +209,10 @@ function FormularioRegistroCliente(){
 
         const DATOS_GUARDADOS = JSON.parse(localStorage.getItem('usuarios'));
         const usuarioFiltrado = DATOS_GUARDADOS.find((value)=> value.email == email && value.contrasena == contrasena)
-        console.log(usuarioFiltrado)
-        console.log("Emial: ", email)
-        console.log("COntraseña: ", contrasena)
-        console.log(typeof usuarioFiltrado)
-
+    
         if(!usuarioFiltrado){
             console.log("usuario no encontrado")
         }else{
-            console.log("ENTROO ACA")
             const sesionActiva = {
                 id: usuarioFiltrado.id, 
                 nombre: usuarioFiltrado.nombre, 

@@ -111,8 +111,19 @@ function FormularioCrearReserva(){
                     </label>
                 </div>
             </section>
-            <section className="text-center">
-                    <p>Informacion</p>
+            <section className="flex justify-between items-center px-2 sm:px-10 md:px-25 my-5">
+                <div>
+                    <p className="text-sm text-gray-600">Modalidad</p>
+                    <p className="text-gray-950">{servicioSeleccionado.modalidad}</p>
+                </div>
+                <div>
+                    <p className="text-sm text-gray-600">Precio</p>
+                    <p className="text-gray-950">${servicioSeleccionado.precio}</p>
+                </div>
+                <div>
+                    <p className="text-sm text-gray-600">Duracion</p>
+                    <p className="text-gray-950">{servicioSeleccionado.duracion} min</p>
+                </div>
             </section>
             <section>
                 <h4>Dias disponibles</h4>

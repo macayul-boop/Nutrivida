@@ -88,8 +88,19 @@ function FormularioEditarReserva({datos, onCerrarModal, onGuardar}){
     return(
         <div className="fixed inset-0 bg-black/60 z-50 flex items-start justify-center p-4 overflow-y-scroll">
             <form className="bg-white max-w-2xl mx-auto mt-5 md:mt-20 px-5 py-6 border border-gray-200 rounded-lg">
-                <section className="text-center">
-                    <p>Informacion</p>
+                <section className="flex justify-between items-center px-2 sm:px-10 md:px-25 my-5">
+                    <div>
+                        <p className="text-sm text-gray-600">Modalidad</p>
+                        <p className="text-gray-950">{servicioSeleccionado.modalidad}</p>
+                    </div>
+                    <div>
+                        <p className="text-sm text-gray-600">Precio</p>
+                        <p className="text-gray-950">${servicioSeleccionado.precio}</p>
+                    </div>
+                    <div>
+                        <p className="text-sm text-gray-600">Duracion</p>
+                        <p className="text-gray-950">{servicioSeleccionado.duracion} min</p>
+                    </div>
                 </section>
                 <section>
                     <h4>Dias disponibles</h4>
