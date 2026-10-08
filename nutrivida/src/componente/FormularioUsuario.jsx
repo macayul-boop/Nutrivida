@@ -154,6 +154,8 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
 
             }else if(hayRepetidos){
                 nuevosErrores.horario = 'Hay dias repetidos'
+            }else if(horarioFinal.length ===0){
+                nuevosErrores.horario = 'Ingresa minimo 1 dia'
             }
 
             molde = {
@@ -200,26 +202,31 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
                     <InputText titulo={'Email'} value={email} placeholder={'Example@gmail.com'} onChange={(e) => setEmail(e.target.value)} error={error.email}/>
                 </div>
                 <div className="flex flex-col w-full gap-1 text-[#0f172a]">
-                    <label>Contraseña</label>
-                    <input type="password" value={contrasena} placeholder="Contraseña" onChange={(e)=> setContrasena(e.target.value)} className="px-4 py-2 border border-gray-300 rounded-lg"/>
+                    <label>Contraseña
+                        <input type="password" value={contrasena} placeholder="Contraseña" onChange={(e)=> setContrasena(e.target.value)} className="px-4 py-2 border border-gray-300 rounded-lg"/>
+                    </label>
+                    
                     {error.contrasena && <span className="text-red-500 text-sm">{error.contrasena}</span>}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                     <div className="flex flex-col w-full gap-1 text-[#0f172a]">
-                        <label>Rol</label>
-                        <select value={rol} onChange={(e)=> setRol(e.target.value)} name="roles" className="w-full border border-gray-300 rounded-lg px-4 py-2">
-                            <option value="">Sin seleccionar</option>
-                            <option value="Nutricionista">Nutricionista</option>
-                            <option value="Secretario">Secretario</option>
-                        </select>
+                        <label>Rol
+                            <select value={rol} onChange={(e)=> setRol(e.target.value)} name="roles" className="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                <option value="">Sin seleccionar</option>
+                                <option value="Nutricionista">Nutricionista</option>
+                                <option value="Secretario">Secretario</option>
+                            </select>
+                        </label>
                         {error.rol && <span className="text-red-500">{error.rol}</span>}
                     </div>
                     <div className="flex flex-col w-full gap-1 text-[#0f172a]">
-                        <label>Estado</label>
-                        <select value={estado} onChange={(e)=> setEstado(e.target.value)} name="estados" className="w-full border border-gray-300 rounded-lg px-4 py-2">
-                            <option value="Activo">Activo</option>
-                            <option value="Deshabilitado">Deshabilitado</option>
-                        </select>
+                        <label>Estado
+                            <select value={estado} onChange={(e)=> setEstado(e.target.value)} name="estados" className="w-full border border-gray-300 rounded-lg px-4 py-2">
+                                <option value="Activo">Activo</option>
+                                <option value="Deshabilitado">Deshabilitado</option>
+                            </select>
+                        </label>
+                        
                         {error.estado && <span className="text-red-500">{error.estado}</span>}
                     </div>
                 </div>
