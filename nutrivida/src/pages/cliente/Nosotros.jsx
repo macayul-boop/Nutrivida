@@ -13,7 +13,7 @@ function Nosotros(){
                         className="w-full h-full object-cover"/>
                     </section>
                     <section className="flex flex-col justify-center items-center lg:items-start">
-                        <h2 className="text-3xl sm:text-4xl font-extrabold text-emerald-700 text-center lg:text-start">Clínica Nutricional Nutrivida</h2>
+                        <h1 className="text-3xl sm:text-4xl font-extrabold text-emerald-700 text-center lg:text-start">Clínica Nutricional Nutrivida</h1>
                         <p className="mt-6 text-slate-800 max-w-2xl text-center lg:text-start lg:max-w-full lg:mt-3.5">Desde hace 5 años, en <strong className="text-emerald-700">NutriVida</strong> nos dedicamos 
                             a transformar la relación de nuestra comunidad con la alimentación. Nacimos en Temuco 
                             como un proyecto enfocado en la salud integral, entendiendo que cada cuerpo, rutina y 

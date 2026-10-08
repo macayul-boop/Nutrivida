@@ -83,7 +83,7 @@ function ServiciosCliente(){
         <>
         <section className="w-full">
             <section className="py-20 flex flex-col justify-center items-center bg-emerald-700" >
-                <h2 className="text-5xl font-bold text-white">Servicios</h2>
+                <h1 className="text-5xl font-bold text-white">Servicios</h1>
                 <p className="text-slate-300 text-md mt-2 w-[23rem] text-center">Atención personalizada presencial en Temuco o mediante Telemedicina.</p>
                 {usuarioActivo 
                 ? (<Link  to={"/reservar"} className="mt-5 py-3 px-8 border-2 border-emerald-300 rounded-lg text-emerald-300 hover:bg-emerald-300 hover:text-emerald-800 font-medium">Reservar</Link>)
