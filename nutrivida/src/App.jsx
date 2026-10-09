@@ -9,7 +9,6 @@ import Nosotros from './pages/cliente/Nosotros';
 import ServiciosCliente from './pages/cliente/ServiciosCliente';
 import TusReservas from './pages/cliente/TusReservas';
 import AdministracionServicios from './pages/administracion/AdministracionServicios';
-import AdministracionInicio from './pages/administracion/AdministracionInicio';
 import SecretarioReserva from './pages/secretario/SecretarioReserva';
 import SecretarioHorario from './pages/secretario/SecretarioHorario';
 import NutricionistaAgenda from './pages/nutricionista/NutricionistaAgenda';
@@ -33,7 +32,6 @@ function App() {
           <Route path='/tusReservas' element={<TusReservas/>} />
 
           {/* Rutas Empleados */}
-          <Route path='/administracion/inicio' element={<AdministracionInicio />} />
           <Route path='/administracion/empleados' element={<AdministracionEmpleado />} />
           <Route path='/administracion/servicios' element={<AdministracionServicios />} />
           <Route path='/secretario/reserva' element={<SecretarioReserva/>}/>
