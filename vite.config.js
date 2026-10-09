@@ -8,6 +8,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  base: './',
   // Configuración de Vitest (pruebas unitarias / de componentes).
   test: {
     environment: 'jsdom',            // usar el DOM simulado
