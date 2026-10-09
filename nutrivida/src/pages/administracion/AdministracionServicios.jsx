@@ -34,11 +34,32 @@ const SERVICIOS_INICIALES = [
 
 function AdministracionServicios(){
 
-    const [listaServicios, setListaServicios] =useState(SERVICIOS_INICIALES)
+    const [listaServicios, setListaServicios] = useState(SERVICIOS_INICIALES)
     const [modal, setModal] = useState(false)
-    const toggle = ()=>{setModal(!modal)}
-    const guardarServicio = (servicio)=>{setListaServicios([...listaServicios,servicio])}
+    const [editandoServicio, setEditandoServicio] = useState(null)
+    const abrirFormulario = ()=>{
+        setEditandoServicio(null)
+        setModal(true)
+    }
 
+    const cerrarFormulario = ()=>{
+        setEditandoServicio(null)
+        setModal(false)
+    }
+
+    const guardarServicio = (servicio)=>{
+        if(editandoServicio !== null){
+            setListaServicios(listaServicios.map((value) => value.id === servicio.id ? servicio : value))
+            setEditandoServicio(null)
+        }else{
+            setListaServicios([...listaServicios, servicio])
+        }
+    }
+
+    const editarServicio = (servicio)=>{
+        setEditandoServicio(servicio)
+        setModal(true)
+    }
     return(
         <div>
             <main className="overflow-x-hidden lg:ml-[300px] ml-0 p-4">
@@ -49,7 +70,7 @@ function AdministracionServicios(){
                 </section>
                 <section className="w-full flex justify-end py-4">
                     <button
-                        onClick={()=> toggle()}
+                        onClick={()=> abrirFormulario()}
                         className="px-4 py-2 bg-green-800 text-white font-semibold rounded-lg cursor-pointer"
                     >
                         Crear servicio
@@ -57,11 +78,12 @@ function AdministracionServicios(){
                 </section>
                 <section className="max-w-7xl w-full h-[25rem] overflow-auto border border-gray-200 rounded-lg">
                     <div className="min-w-[700px]">
-                        <section className="w-full grid grid-cols-4 py-2 bg-gray-900 text-white px-4">
+                        <section className="w-full grid grid-cols-5 py-2 bg-gray-900 text-white px-4">
                             <p>Nombre</p>
                             <p>Precio</p>
                             <p>Duracion</p>
                             <p>Modalidad</p>
+                            <p>Acciones</p>
                         </section>
 
                         <section>
@@ -69,6 +91,7 @@ function AdministracionServicios(){
                                 <Servicio
                                     key={value.id}
                                     datos={value}
+                                    onEditar={editarServicio}
                                 />
                             ))}
                         </section>
@@ -77,8 +100,9 @@ function AdministracionServicios(){
             </main>
             {modal &&
             <FormularioServicio
-                onCerrarModal={()=> toggle()}
+                onCerrarModal={()=> cerrarFormulario()}
                 onGuardar={guardarServicio}
+                servicioEditable={editandoServicio}
             />
         }
         </div>

@@ -1,12 +1,23 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-function FormularioServicio({onCerrarModal, onGuardar}){
+function FormularioServicio({onCerrarModal,onGuardar,servicioEditable}){
 
     const [error, setError] = useState({})
     const [nombre, setNombre] = useState('')
     const [precio, setPrecio] = useState('')
     const [duracion, setDuracion] = useState('')
     const [modalidad, setModalidad] = useState('')
+    useEffect(()=>{
+
+        if(servicioEditable !== null){
+
+            setNombre(servicioEditable.nombre)
+            setPrecio(servicioEditable.precio.toString())
+            setDuracion(servicioEditable.duracion.toString())
+            setModalidad(servicioEditable.modalidad)
+        }
+
+    }, [servicioEditable])
 
     const cancelar = ()=>{
         onCerrarModal()
@@ -42,7 +53,7 @@ function FormularioServicio({onCerrarModal, onGuardar}){
         if(Object.keys(nuevosErrores).length === 0){
 
             const nuevoServicio = {
-                id:Date.now(),
+                id:servicioEditable  !== null? servicioEditable .id: Date.now(),
                 nombre:nombre.trim(),
                 precio:Number(precio),
                 duracion:Number(duracion),
