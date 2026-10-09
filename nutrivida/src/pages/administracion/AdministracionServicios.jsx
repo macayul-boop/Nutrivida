@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Servicio from '../../componente/Servicio';
 import FormularioServicio from '../../componente/FormularioServicio';
+import ModalConfirmacion from '../../componente/ModalConfirmacion';
 const SERVICIOS_INICIALES = [
     {
         id:1,
@@ -60,6 +61,26 @@ function AdministracionServicios(){
         setEditandoServicio(servicio)
         setModal(true)
     }
+
+    const [modalEliminar, setModalEliminar] = useState(false)
+
+    const [servicioEliminar, setServicioEliminar] = useState(null)
+
+    const mostrarModalEliminar = (idServicio)=>{
+        setModalEliminar(!modalEliminar)
+        setServicioEliminar(idServicio)
+    }
+
+    const cancelarEliminar = ()=>{
+        setModalEliminar(!modalEliminar)
+        setServicioEliminar(null)
+    }
+
+    const eliminarServicio = (idServicio)=>{
+        setListaServicios(listaServicios.filter((value) => value.id !== idServicio))
+        setModalEliminar(!modalEliminar)
+        setServicioEliminar(null)
+    }
     return(
         <div>
             <main className="overflow-x-hidden lg:ml-[300px] ml-0 p-4">
@@ -91,7 +112,8 @@ function AdministracionServicios(){
                                 <Servicio
                                     key={value.id}
                                     datos={value}
-                                    onEditar={editarServicio}
+                                    onEditar={()=> editarServicio(value)}
+                                    onEliminar={()=> mostrarModalEliminar(value.id)}
                                 />
                             ))}
                         </section>
@@ -103,6 +125,14 @@ function AdministracionServicios(){
                 onCerrarModal={()=> cerrarFormulario()}
                 onGuardar={guardarServicio}
                 servicioEditable={editandoServicio}
+            />
+        }
+        {modalEliminar &&
+            <ModalConfirmacion
+                titulo={"¿Estas seguro que quieres eliminar el servicio?"}
+                onCancelar={()=> cancelarEliminar()}
+                onEvento={()=> eliminarServicio(servicioEliminar)}
+                textEvento={"Eliminar"}
             />
         }
         </div>
