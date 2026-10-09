@@ -7,7 +7,6 @@ function FormularioContactanos(){
     const [email, setEmail] = useState("")
     const [mensaje,setMensaje] = useState("")
     const [error, setErrores] = useState({})
-    const [exito, setExito] = useState(false)
 
 
     const validarFormulario = (e)=>{
@@ -34,7 +33,6 @@ function FormularioContactanos(){
 
         if(Object.keys(nuevosErrores).length === 0){
             console.log("Formulario válido",{nombre,email,mensaje})
-            setExito(true)
 
             setNombre("")
             setEmail("")

@@ -2,7 +2,7 @@ import FooterCliente from "../../componente/Footers/FooterCliente";
 import { Link } from "react-router-dom"
 
 
-export const listaTipoConsultas = [
+const listaTipoConsultas = [
     {
         id:1,
         nombre: "Primera consulta nutricional",
@@ -41,7 +41,7 @@ export const listaTipoConsultas = [
 ]
 
 
-export const listaTipoEvaluaciones = [
+const listaTipoEvaluaciones = [
     {
         id:1,
         nombre: "Antropometría completa",

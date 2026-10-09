@@ -7,10 +7,12 @@ function FormularioServicio({onCerrarModal,onGuardar,servicioEditable, }){
     const [precio, setPrecio] = useState('')
     const [duracion, setDuracion] = useState('')
     const [modalidad, setModalidad] = useState('')
+
+    
+    /* eslint-disable react-hooks/set-state-in-effect */
     useEffect(()=>{
 
         if(servicioEditable !== null){
-
             setNombre(servicioEditable.nombre)
             setPrecio(servicioEditable.precio.toString())
             setDuracion(servicioEditable.duracion.toString())
@@ -18,6 +20,7 @@ function FormularioServicio({onCerrarModal,onGuardar,servicioEditable, }){
         }
 
     }, [servicioEditable])
+    /* eslint-disable react-hooks/set-state-in-effect */
 
     const cancelar = ()=>{
         onCerrarModal()
