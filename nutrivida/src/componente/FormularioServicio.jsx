@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-function FormularioServicio({onCerrarModal,onGuardar,servicioEditable}){
+function FormularioServicio({onCerrarModal,onGuardar,servicioEditable, }){
 
     const [error, setError] = useState({})
     const [nombre, setNombre] = useState('')
