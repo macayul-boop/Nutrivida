@@ -21,3 +21,11 @@ export const clienteHeader={
     rol: "Cliente",
     email: "clientetest@gmail.com"
 }
+
+export const reservaSecretarioTest={
+    nombreCliente: "Matias Cayul",
+    nombreNutricionista: "Eduardo Rubilar",
+    fecha: "2026-10-15",
+    horaInicio: "10:30",
+    estado: "Reservado"
+}
