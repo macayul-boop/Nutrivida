@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import Layout from './componente/Layout';
 import Inicio from './pages/cliente/InicioCliente';
 import Login from './pages/cliente/Login';
@@ -17,7 +17,7 @@ import NutricionistaFichaClinica from './pages/nutricionista/NutricionistaFichaC
 function App() {
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path='/' element={<Layout/>}>
           {/* Rutas Invitados */}
@@ -41,7 +41,7 @@ function App() {
 
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 

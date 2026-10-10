@@ -5,14 +5,13 @@ import SelectorDia from './SelectorDia'
 
 describe('SelectorDia', () => {
 
-  // Datos de prueba basándonos en tu objeto de ejemplo
   const horarioPrueba = [
     { dia: "Martes", horaInicio: "14:00", horaTermino: "19:00" },
     { dia: "Viernes", horaInicio: "14:00", horaTermino: "19:00" }
   ]
 
   it('no renderiza botones si el horario está vacío o es undefined', () => {
-    const { container } = render(<SelectorDia horario={[]} />)
+    render(<SelectorDia horario={[]} />)
 
     expect(screen.queryAllByRole('button')).toHaveLength(0)
   })
