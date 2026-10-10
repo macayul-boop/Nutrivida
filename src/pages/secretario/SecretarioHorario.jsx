@@ -56,12 +56,13 @@ function SecretarioHorario(){
                 </section>
 
                 <section className="flex flex-col mt-5 gap-1.5">
-                    <label className="font-semibold text-lg">Nutricionista</label>
-                    <select onChange={(e) => handleNutricionistaChange(e)} className="px-4 py-2 border border-gray-300 rounded-lg">
-                        {nutricionistas.map((value)=>(
-                            <option key={value.id} value={value.id}>{value.nombre} {value.apellidos}</option>
-                        ))}
-                    </select>
+                    <label className="font-semibold text-lg flex flex-col">Nutricionista
+                        <select onChange={(e) => handleNutricionistaChange(e)} className="px-4 py-2 border border-gray-300 rounded-lg">
+                            {nutricionistas.map((value)=>(
+                                <option key={value.id} value={value.id}>{value.nombre} {value.apellidos}</option>
+                            ))}
+                        </select>
+                    </label>
                 </section>
 
                 <section className="mt-5">

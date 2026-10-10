@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import SecretarioReserva from './SecretarioReserva'
 
-describe('SecretarioReserva (Vista)', () => {
+describe('SecretarioReserva', () => {
 
   it('renderiza la tabla con los encabezados y la reserva por defecto', () => {
     render(<SecretarioReserva />)
