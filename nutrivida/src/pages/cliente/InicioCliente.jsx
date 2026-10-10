@@ -14,7 +14,7 @@ function InicioCliente(){
             <section className="w-full h-100 bg-emerald-700 md:h-[38rem] grid grid-cols-1">
                 <section className="flex flex-col justify-center items-center">
                     <div className="flex flex-col justify-center items-center gap-3">
-                        <h2 className="text-3xl md:text-5xl font-bold text-white text-center ">Clinica Nutricional Nutrivida</h2>
+                        <h1 className="text-3xl md:text-5xl font-bold text-white text-center ">Clinica Nutricional Nutrivida</h1>
                         <p className="text-slate-300 text-lg">Asesoría nutricional personalizada</p>
                     </div>
                     {usuarioActivo 
