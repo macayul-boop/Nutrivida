@@ -15,3 +15,9 @@ export const empleadonutricionista={
     rol: "Nutricionista",
     email: "nutricionistatest@gmail.com"
 }
+
+export const clienteHeader={
+    nombre: "Bastian Cofre",
+    rol: "Cliente",
+    email: "clientetest@gmail.com"
+}
