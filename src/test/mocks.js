@@ -36,3 +36,14 @@ export const servicioTest={
     duracion: 45,
     modalidad: "Online"
 }
+export const reservaCliente = {
+    id: 1,
+    nombreConsulta: "Consulta nutricional",
+    modalidad: "Presencial",
+    precio: 25000,
+    duracion: 60,
+    nombreNutricionista: "Felipe Araya",
+    fecha: "15/10/2026",
+    horaInicio: "14:00",
+    estado: "Reservado"
+}
