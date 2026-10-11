@@ -120,16 +120,16 @@ describe("FormularioServicio", ()=>{
                 />
             )
 
-            const inputNombre = screen.getByPlaceholderText('Nombre del servicio')
-            await user.clear(inputNombre)
-            await user.type(inputNombre, 'Control deportivo actualizado')
+            const inputPrecio = screen.getByPlaceholderText('35000')
+            await user.clear(inputPrecio)
+            await user.type(inputPrecio, '30000')
 
             await user.click(screen.getByRole('button', { name: 'Guardar' }))
 
             expect(mockGuardar).toHaveBeenCalledWith(
                 expect.objectContaining({
                     id: 20,
-                    nombre: 'Control deportivo actualizado',
+                    precio: 30000,
                 })
             )
         })
