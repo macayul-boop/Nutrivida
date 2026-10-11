@@ -2,6 +2,8 @@ import { useState } from "react"
 import FormularioEditarReserva from "../../componente/FormularioEditarReserva"
 import ModalConfirmacion from "../../componente/ModalConfirmacion"
 import DetallesInforme from "../../componente/DetallesInforme"
+
+
 const RESERVAS_INICIALES = [
     {
         id: 1,
@@ -51,7 +53,7 @@ const HISTORIAL_CONSULTAS = [
     }
 ]
 
-function ReservaCliente({datos, onEditar, onCancelar, onMostrar}){
+export function ReservaCliente({datos, onEditar, onCancelar, onMostrar}){
 
     return(
         <article className="max-w-[30rem] w-full border border-gray-200 rounded-xl p-3.5">
@@ -173,7 +175,7 @@ function ReservaCliente({datos, onEditar, onCancelar, onMostrar}){
     )
 }
 
-function TusReservas(){
+export function TusReservas(){
     const [reservas, setReservas] = useState(RESERVAS_INICIALES)
     const [reservaEditar, setReservaEditar] = useState(null)
     const [modalEditarReserva, setModalEditarReserva] = useState(false)
