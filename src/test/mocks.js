@@ -29,7 +29,13 @@ export const reservaSecretarioTest={
     horaInicio: "10:30",
     estado: "Reservado"
 }
-
+export const servicioTest={
+    id: 10,
+    nombre: "Consulta deportiva",
+    precio: 40000,
+    duracion: 45,
+    modalidad: "Online"
+}
 export const reservaCliente = {
     id: 1,
     nombreConsulta: "Consulta nutricional",
