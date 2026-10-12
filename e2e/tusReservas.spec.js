@@ -1,8 +1,8 @@
 import {test, expect} from "@playwright/test"
 
-test.describe("Inicio de sesion y modificación de tus Reservas", () =>{
+test.describe("Inicio de sesion, borrar una de Reserva", () =>{
     test.beforeEach(async ({page}) => {
-        await page.goto("/login")
+        await page.goto("/#/login")
 
         await page.getByPlaceholder("Example@gmail.com").fill("cliente@gmail.com")
         await page.getByPlaceholder("Contraseña").fill("1234567")
