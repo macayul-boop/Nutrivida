@@ -8,7 +8,7 @@ test.describe("Inicio de sesion, borrar una de Reserva", () =>{
         await page.getByPlaceholder("Contraseña").fill("1234567")
         await page.getByRole("button", {name: "Iniciar Sesion"}).click()
 
-        await page.goto("/tusReservas")
+        await page.goto("/#/tusReservas")
 
     })
 
@@ -20,7 +20,7 @@ test.describe("Inicio de sesion, borrar una de Reserva", () =>{
 
     test("Abrir modal de confirmación y cancelar una reserva", async({page}) => {
 
-        await page.getByRole("button", {name: "Cancelar"}).first.click()
+        await page.getByRole("button", {name: "Cancelar"}).first().click()
         await expect(page.getByText("¿Estas seguro de que quieres cancelar la reserva?")).toBeVisible()
 
         await page.getByRole("button", {name: "Cancelar reserva"}).click()
@@ -28,7 +28,7 @@ test.describe("Inicio de sesion, borrar una de Reserva", () =>{
     })
 
     test("Despliega y cierra el historial de consultas", async({page}) => {
-        await page.getByRole("button", {name: "Ver Informe clínico"}).first.click()
+        await page.getByRole("button", {name: "Ver Informe clínico"}).first().click()
 
         await expect(page.getByText(/Informe #/i)).toBeVisible()
         await expect(page.getByText(/Peso:/i)).toBeVisible()
