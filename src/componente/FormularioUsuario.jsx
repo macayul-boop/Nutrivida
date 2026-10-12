@@ -202,7 +202,7 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
                     <InputText titulo={'Email'} value={email} placeholder={'Example@gmail.com'} onChange={(e) => setEmail(e.target.value)} error={error.email}/>
                 </div>
                 <div className="flex flex-col w-full gap-1 text-[#0f172a]">
-                    <label>Contraseña
+                    <label className="flex flex-col">Contraseña
                         <input type="password" value={contrasena} placeholder="Contraseña" onChange={(e)=> setContrasena(e.target.value)} className="px-4 py-2 border border-gray-300 rounded-lg"/>
                     </label>
                     
