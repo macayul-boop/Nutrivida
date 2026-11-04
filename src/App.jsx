@@ -15,6 +15,7 @@ import SecretarioReserva from './pages/secretario/SecretarioReserva';
 import SecretarioHorario from './pages/secretario/SecretarioHorario';
 import NutricionistaAgenda from './pages/nutricionista/NutricionistaAgenda';
 import NutricionistaFichaClinica from './pages/nutricionista/NutricionistaFichaClinica';
+import PrivateRoute from './componente/Headers/PrivateRoute';
 
 function App() {
 
@@ -32,16 +33,16 @@ function App() {
             <Route path='/servicios' element={<ServiciosCliente/>} />
 
             {/* Rutas Clientes */}
-            <Route path='/reservar' element={<Reservar/>} />
-            <Route path='/tusReservas' element={<TusReservas/>} />
+            <Route path='/reservar' element={<PrivateRoute rolesPermitidos={["CLIENTE"]}> <Reservar/> </PrivateRoute>} />
+            <Route path='/tusReservas' element={<PrivateRoute rolesPermitidos={["CLIENTE"]}> <TusReservas/> </PrivateRoute>} />
 
             {/* Rutas Empleados */}
-            <Route path='/administracion/empleados' element={<AdministracionEmpleado />} />
-            <Route path='/administracion/servicios' element={<AdministracionServicios />} />
-            <Route path='/secretario/reserva' element={<SecretarioReserva/>}/>
-            <Route path='/secretario/horario' element={<SecretarioHorario/>}/>
-            <Route path='/nutricionista/agenda' element={<NutricionistaAgenda/>}/>
-            <Route path='/nutricionista/fichaClinica' element={<NutricionistaFichaClinica/>}/>
+            <Route path='/administracion/empleados' element={<PrivateRoute rolesPermitidos={["ADMINISTRADOR"]}> <AdministracionEmpleado /> </PrivateRoute>} />
+            <Route path='/administracion/servicios' element={<PrivateRoute rolesPermitidos={["ADMINISTRADOR"]}> <AdministracionServicios /> </PrivateRoute>} />
+            <Route path='/secretario/reserva' element={<PrivateRoute rolesPermitidos={["SECRETARIO"]}> <SecretarioReserva/> </PrivateRoute>}/>
+            <Route path='/secretario/horario' element={<PrivateRoute rolesPermitidos={["SECRETARIO"]}> <SecretarioHorario/> </PrivateRoute>}/>
+            <Route path='/nutricionista/agenda' element={<PrivateRoute rolesPermitidos={["NUTRICIONISTA"]}> <NutricionistaAgenda/> </PrivateRoute>}/>
+            <Route path='/nutricionista/fichaClinica' element={<PrivateRoute rolesPermitidos={["NUTRICIONISTA"]}> <NutricionistaFichaClinica/> </PrivateRoute>}/>
 
           </Route>
         </Routes>

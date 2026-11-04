@@ -1,24 +1,27 @@
 export const empleadoAdmin ={
     nombre: "Eduardo Rubilar",
-    rol: "Admin",
+    rol: "ADMINISTRADOR",
     email: "admintest@gamil.com"
 }
 
 export const empleadoSecretario={
     nombre: "Maria Perez",
-    rol: "Secretario",
+    rol: "SECRETARIO",
+    id:1,
     email: "secretariatest@gmail.com"
 }
 
 export const empleadonutricionista={
     nombre: "Jose Yañez",
-    rol: "Nutricionista",
+    rol: "NUTRICIONISTA",
+    id:1,
     email: "nutricionistatest@gmail.com"
 }
 
 export const clienteHeader={
     nombre: "Bastian Cofre",
-    rol: "Cliente",
+    id:1,
+    rol: "CLIENTE",
     email: "clientetest@gmail.com"
 }
 
