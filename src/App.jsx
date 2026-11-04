@@ -19,8 +19,9 @@ import NutricionistaFichaClinica from './pages/nutricionista/NutricionistaFichaC
 function App() {
 
   return (
-    <AuthProvider>
-      <HashRouter>
+    <HashRouter>
+      <AuthProvider>
+      
         <Routes>
           <Route path='/' element={<Layout/>}>
             {/* Rutas Invitados */}
@@ -44,8 +45,8 @@ function App() {
 
           </Route>
         </Routes>
-      </HashRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </HashRouter>
   )
 }
 

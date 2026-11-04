@@ -1,14 +1,18 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom"
 import axiosClient from "../api/axiosClient";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
 
+    const navigate = useNavigate()
+
     const [token, setToken] = useState(null);
     const [usuario, setUsuario] = useState(null);
     const [cargando, setCargando] = useState(true);
+    
 
     // Recuperar la sesión cuando se carga la aplicación
 
@@ -91,6 +95,7 @@ export function AuthProvider({ children }) {
         localStorage.removeItem("token");
         setToken(null);
         setUsuario(null);
+        navigate("/login")
     };
 
     const autenticado = !!token && !!usuario;

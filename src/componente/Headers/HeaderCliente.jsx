@@ -1,9 +1,11 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { useAuth } from "../../context/AuthContext";
 
-function HeaderCliente({datos, onCerrarSesion}){
+function HeaderCliente(){
 
     const [menuAbierto, setMenuAbierto] = useState(false)
+    const { usuario, logout } = useAuth();
     
     return(
             <header className=" text-zinc-900 px-4 py-6 border-b border-zinc-200">
@@ -28,8 +30,8 @@ function HeaderCliente({datos, onCerrarSesion}){
                             <li className="flex lg:items-center"><Link to={"/tusReservas"} className="block hover:text-emerald-500">Tus reservas</Link></li>
                             <li className="flex lg:items-center"><Link to={"/reservar"} className="block hover:text-emerald-500">Reservar</Link></li>
                             <div className="max-w-[120px] flex flex-col justify-center items-center ">
-                                <p>{datos.nombre}</p>
-                                <button onClick={onCerrarSesion} className="cursor-pointer bg-green-700 tetx-white rounded-sm px-2 text-white">Cerrar Sesion</button>
+                                <p>{usuario.email}</p>
+                                <button onClick={logout} className="cursor-pointer bg-green-700 tetx-white rounded-sm px-2 text-white">Cerrar Sesion</button>
                             </div>
                         </ul>
                     </nav>

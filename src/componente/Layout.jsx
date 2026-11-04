@@ -1,4 +1,5 @@
-import {Outlet, useNavigate} from 'react-router-dom';
+import {Outlet} from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 import HeaderInvitado from './Headers/HeaderInvitado';
 import HeaderCliente from './Headers/HeaderCliente';
@@ -6,26 +7,26 @@ import HeaderEmpleado from './Headers/HeaderEmpleado';
 
 
 function Layout(){
-    const navigate = useNavigate()
 
-    const usuarioActivo = JSON.parse(localStorage.getItem('sesion_activa'));
+    const { usuario, autenticado, cargando } = useAuth();
 
-    const cerrarSesion = ()=>{
-        localStorage.removeItem('sesion_activa');
-        navigate('/login');
+    if (cargando) {
+        return null;
     }
 
     const renderHeader = ()=>{
-        if(!usuarioActivo){
+        if(!autenticado){
             return <HeaderInvitado/>
         }
 
-        if(usuarioActivo.rol === 'Cliente'){
-            return <HeaderCliente datos={usuarioActivo} onCerrarSesion={cerrarSesion}/>
+        const rol = usuario.roles[0];
+
+        if(rol === 'CLIENTE'){
+            return <HeaderCliente/>
         }
 
-        if(usuarioActivo.rol === 'Nutricionista' || usuarioActivo.rol === 'Secretario' || usuarioActivo.rol === 'Admin'){
-            return <HeaderEmpleado datos={usuarioActivo} onCerrarSesion={cerrarSesion}/>
+        if(rol === 'NUTRICIONISTA' || rol === 'SECRETARIO' || rol === 'ADMINISTRADOR'){
+            return <HeaderEmpleado/>
         }
 
         return <HeaderInvitado/>
