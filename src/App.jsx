@@ -1,4 +1,6 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+
 import Layout from './componente/Layout';
 import Inicio from './pages/cliente/InicioCliente';
 import Login from './pages/cliente/Login';
@@ -17,31 +19,33 @@ import NutricionistaFichaClinica from './pages/nutricionista/NutricionistaFichaC
 function App() {
 
   return (
-    <HashRouter>
-      <Routes>
-        <Route path='/' element={<Layout/>}>
-          {/* Rutas Invitados */}
-          <Route index element={<Inicio/>} />
-          <Route path='/login' element={<Login/>} />
-          <Route path='/registrarse' element={<Registro/>} />
-          <Route path='/nosotros' element={<Nosotros/>} />
-          <Route path='/servicios' element={<ServiciosCliente/>} />
+    <AuthProvider>
+      <HashRouter>
+        <Routes>
+          <Route path='/' element={<Layout/>}>
+            {/* Rutas Invitados */}
+            <Route index element={<Inicio/>} />
+            <Route path='/login' element={<Login/>} />
+            <Route path='/registrarse' element={<Registro/>} />
+            <Route path='/nosotros' element={<Nosotros/>} />
+            <Route path='/servicios' element={<ServiciosCliente/>} />
 
-          {/* Rutas Clientes */}
-          <Route path='/reservar' element={<Reservar/>} />
-          <Route path='/tusReservas' element={<TusReservas/>} />
+            {/* Rutas Clientes */}
+            <Route path='/reservar' element={<Reservar/>} />
+            <Route path='/tusReservas' element={<TusReservas/>} />
 
-          {/* Rutas Empleados */}
-          <Route path='/administracion/empleados' element={<AdministracionEmpleado />} />
-          <Route path='/administracion/servicios' element={<AdministracionServicios />} />
-          <Route path='/secretario/reserva' element={<SecretarioReserva/>}/>
-          <Route path='/secretario/horario' element={<SecretarioHorario/>}/>
-          <Route path='/nutricionista/agenda' element={<NutricionistaAgenda/>}/>
-          <Route path='/nutricionista/fichaClinica' element={<NutricionistaFichaClinica/>}/>
+            {/* Rutas Empleados */}
+            <Route path='/administracion/empleados' element={<AdministracionEmpleado />} />
+            <Route path='/administracion/servicios' element={<AdministracionServicios />} />
+            <Route path='/secretario/reserva' element={<SecretarioReserva/>}/>
+            <Route path='/secretario/horario' element={<SecretarioHorario/>}/>
+            <Route path='/nutricionista/agenda' element={<NutricionistaAgenda/>}/>
+            <Route path='/nutricionista/fichaClinica' element={<NutricionistaFichaClinica/>}/>
 
-        </Route>
-      </Routes>
-    </HashRouter>
+          </Route>
+        </Routes>
+      </HashRouter>
+    </AuthProvider>
   )
 }
 

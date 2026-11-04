@@ -1,178 +1,8 @@
 import { useState } from "react"
 import InputText from "./InputText"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
 
-const listaUsuario = [
-                {
-                    id:1, 
-                    rut:"222306497", 
-                    nombre:"Matias", 
-                    apellidos:"Cayul", 
-                    telefono:"+56963391571", 
-                    email:"admin@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Admin", 
-                    estado:"Activo"
-                },
-                {
-                    id:2, 
-                    rut:"123456789", 
-                    nombre:"Carolina", 
-                    apellidos:"Fuentes", 
-                    telefono:"+56912345678", 
-                    email: "nutri1@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Nutricionista", 
-                    estado:"Activo", 
-                    horario:[
-                        {
-                            dia:"Lunes",
-                            horaInicio:"09:00",
-                            horaTermino:"17:00"
-                        },
-                        {
-                            dia:"Miercoles",
-                            horaInicio:"09:00",
-                            horaTermino:"17:00"
-                        },  
-                        {
-                            dia:"Viernes",
-                            horaInicio:"09:00",
-                            horaTermino:"17:00"
-                        }
-                    ]
-                },
-                {
-                    id:3, 
-                    rut:"123456789", 
-                    nombre:"Rodrigo", 
-                    apellidos:"Sepulveda", 
-                    telefono:"+56912345678", 
-                    email: "nutri2@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Nutricionista", 
-                    estado:"Activo", 
-                    horario:[
-                        {
-                            dia:"Martes",
-                            horaInicio:"09:00",
-                            horaTermino:"14:00"
-                        },
-                        {
-                            dia:"Jueves",
-                            horaInicio:"09:00",
-                            horaTermino:"14:00"
-                        },
-                        {
-                            dia:"Sabado",
-                            horaInicio:"09:00",
-                            horaTermino:"14:00"
-                        }
-                    ]
-                },
-                {
-                    id:4, 
-                    rut:"123456789", 
-                    nombre:"Daniela", 
-                    apellidos:"Morales", 
-                    telefono:"+56912345678", 
-                    email: "nutri3@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Nutricionista", 
-                    estado:"Activo", 
-                    horario:[
-                        {
-                            dia:"Lunes",
-                            horaInicio:"08:00",
-                            horaTermino:"13:00"
-                        },
-                        {
-                            dia:"Viernes",
-                            horaInicio:"08:00",
-                            horaTermino:"13:00"
-                        }
-                    ]
-                },
-                {
-                    id:4, 
-                    rut:"123456789", 
-                    nombre:"Rodrigo", 
-                    apellidos:"Sepulveda", 
-                    telefono:"+56912345678", 
-                    email: "nutri4@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Nutricionista", 
-                    estado:"Activo", 
-                    horario:[
-                        {
-                            dia:"Martes",
-                            horaInicio:"09:00",
-                            horaTermino:"14:00"
-                        },
-                        {
-                            dia:"Jueves",
-                            horaInicio:"09:00",
-                            horaTermino:"14:00"
-                        },
-                        {
-                            dia:"Sabado",
-                            horaInicio:"09:00",
-                            horaTermino:"14:00"
-                        }
-                    ]
-                },
-                {
-                    id:5, 
-                    rut:"123456789", 
-                    nombre:"Felipe", 
-                    apellidos:"Araya", 
-                    telefono:"+56912345678", 
-                    email: "nutri5@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Nutricionista", 
-                    estado:"Activo", 
-                    horario:[
-                        {
-                            dia:"Martes",
-                            horaInicio:"14:00",
-                            horaTermino:"19:00"
-                        },
-                        {
-                            dia:"Viernes",
-                            horaInicio:"14:00",
-                            horaTermino:"19:00"
-                        }
-                    ]
-                },
-                {
-                    id:6, 
-                    rut:"123456789", 
-                    nombre:"Benjamin", 
-                    apellidos:"Araya", 
-                    telefono:"+56912345678", 
-                    email: "secretario1@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Secretario", 
-                    estado:"Activo"
-                },
-                {
-                    id:7, 
-                    rut:"123456789", 
-                    nombre:"Eduardo", 
-                    apellidos:"Araya", 
-                    telefono:"+56912345678", 
-                    email: "cliente@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Cliente", 
-                    estado:"Activo"
-                }
-            ]
-
-const existeDatos = JSON.parse(localStorage.getItem('usuarios'));
-
-if(existeDatos == null ){
-    localStorage.setItem('usuarios', JSON.stringify(listaUsuario));
-}
 
 function FormularioRegistroCliente(){
     const navigate = useNavigate()
@@ -180,8 +10,9 @@ function FormularioRegistroCliente(){
     const [email, setEmail] = useState("")
     const [contrasena, setContrasena] = useState("")
     const [errores, setErrores] = useState({})
+    const {login} = useAuth()
 
-    const validarFormulario = (e)=>{
+    const validarFormulario = async (e)=>{
         e.preventDefault()
         
         let nuevosErrores = {}
@@ -199,44 +30,37 @@ function FormularioRegistroCliente(){
 
         if(Object.keys(nuevosErrores).length === 0){
             console.log("Paso con los campos llenos")
-            iniciarSesion()
+            
+            try {
+                
+                const datosUsuario = await login({
+                    email: email,
+                    contrasena: contrasena
+                });
+
+                let rol = datosUsuario.roles[0];
+
+                if(rol === 'CLIENTE'){
+                    navigate("/");
+                }else if(rol === 'ADMINISTRADOR'){
+                    navigate("/administracion/empleados");
+                    console.log("Entro al cmabio de vista de admin")
+                }else if(rol === 'NUTRICIONISTA'){
+                    navigate("/nutricionista/agenda")
+                }else if(rol === 'SECRETARIO'){
+                    console.log("Cambio a vista Secretario")
+                    navigate("/secretario/reserva");
+                }
+
+                setContrasena('')
+                setEmail('')
+
+            } catch (error) {
+                console.log(error)
+            }
         }else{
             console.log("Fallo")
         }
-    }
-
-    const iniciarSesion = ()=>{
-
-        const DATOS_GUARDADOS = JSON.parse(localStorage.getItem('usuarios'));
-        const usuarioFiltrado = DATOS_GUARDADOS.find((value)=> value.email == email && value.contrasena == contrasena)
-    
-        if(!usuarioFiltrado){
-            console.log("usuario no encontrado")
-        }else{
-            const sesionActiva = {
-                id: usuarioFiltrado.id, 
-                nombre: usuarioFiltrado.nombre, 
-                rol: usuarioFiltrado.rol
-            }
-
-            localStorage.setItem('sesion_activa', JSON.stringify(sesionActiva));
-
-            if(sesionActiva.rol === 'Cliente'){
-                navigate("/");
-            }else if(sesionActiva.rol === 'Admin'){
-                navigate("/administracion/empleados");
-                console.log("Entro al cmabio de vista de admin")
-            }else if(sesionActiva.rol === 'Nutricionista'){
-                navigate("/nutricionista/agenda")
-            }else if(sesionActiva.rol === 'Secretario'){
-                console.log("Cambio a vista Secretario")
-                navigate("/secretario/reserva");
-            }
-
-            setContrasena('')
-            setEmail('')
-        }
-        console.log(usuarioFiltrado)
     }
 
     return(
