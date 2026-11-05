@@ -37,6 +37,7 @@ export function AuthProvider({ children }) {
 
             } catch (error) {
                 localStorage.removeItem("token");
+                console.log(error)
             }
         }
 
