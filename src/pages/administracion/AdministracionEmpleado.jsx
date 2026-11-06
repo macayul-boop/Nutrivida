@@ -67,7 +67,8 @@ function AdministracionEmpleado(){
     }
 
     // Elimina el usuario y libera el id del usaurio eliminado
-    const eliminarUsuario = (idUsuario)=>{
+    const eliminarUsuarioFunction = (idUsuario)=>{
+        eliminarUsuario(idUsuario)
         setListaUsuario(listaUsuario.filter(value=> value.id !== idUsuario));
         setModalEliminar(!modalEliminar)
         setUsuarioEliminar(null)
@@ -122,7 +123,7 @@ function AdministracionEmpleado(){
                 </section>
             </main>
             {modal && <FormularioUsuario onCerrarModal={()=> toggle()} usuarioEditado={editandoUsuario} onGuardar={guardarUsuario} onLimpiarEditable={()=>setEditandoUsuario(null)} />}
-            {modalEliminar && <ModalConfirmacion titulo={"¿Estas seguro que quieres eliminar el usuario?"} onCancelar={()=> cancelarEliminar()} onEvento={()=>eliminarUsuario(usuarioEliminar)} textEvento={"Eliminar"}/>}
+            {modalEliminar && <ModalConfirmacion titulo={"¿Estas seguro que quieres eliminar el usuario?"} onCancelar={()=> cancelarEliminar()} onEvento={()=>eliminarUsuarioFunction(usuarioEliminar)} textEvento={"Eliminar"}/>}
         </div>
     )
     
