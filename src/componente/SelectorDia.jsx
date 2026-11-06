@@ -21,7 +21,7 @@ function SelectorDia({horario = [], diaSeleccionado, onSeleccionarDia, diaSiguie
       if (!horario || horario.length === 0) return [];
 
       // Extraemos solo los nombres de los días y los convertimos a números (0 a 6)
-      const diasNumeros = horario.map((h) => MAPA_DIAS[h.dia.toLowerCase()]);
+      const diasNumeros = horario.map((h) => MAPA_DIAS[h.diaSemana.toLowerCase()]);
 
       const fechas = [];
       let fechaEvaluada = new Date();

@@ -2,8 +2,8 @@ function ReservaSecretario({datos, onEditar, onCancelar}){
 
     return(
         <article className="w-full grid grid-cols-5 py-2 px-4">
-            <p className="flex items-center">{datos.nombreCliente}</p>
-            <p className="flex items-center">{datos.nombreNutricionista}</p>
+            <p className="flex items-center">{datos.datosClientes.nombre}</p>
+            <p className="flex items-center">{datos.datosNutricionista.nombre}</p>
             <p className="flex items-center">{datos.fecha} - {datos.horaInicio}</p>
             <p className="flex items-center">{datos.estado}</p>
             <div className="flex justify-end items-center">
