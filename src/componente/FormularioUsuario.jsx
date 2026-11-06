@@ -26,7 +26,7 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
             setContrasena(usuarioEditado.contrasena)
             setRol(usuarioEditado.rol)
             setEstado(usuarioEditado.estado)
-            setDias(usuarioEditado.horario || [])
+            setDias(usuarioEditado.horarioNutricionista || [])
             console.log(usuarioEditado.horario)
         }
 

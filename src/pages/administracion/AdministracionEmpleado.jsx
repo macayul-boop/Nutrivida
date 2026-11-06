@@ -36,8 +36,11 @@ function AdministracionEmpleado(){
     // Guardar el usuario
     const guardarUsuario = (usuario)=>{
         if(editandoUsuario !== null){
-            setListaUsuario(listaUsuario.map((value) => value.id === usuario.id ? usuario : value))
-            setEditandoUsuario(null)
+            editarEmpleado(usuario.id, usuario)
+                .then((res)=> {
+                    setListaUsuario(listaUsuario.map((value) => value.id === usuario.id ? res.data : value))
+                    setEditandoUsuario(null)
+                })
         }else{
             crearEmpleado(usuario)
                 .then((res) => setListaUsuario([...listaUsuario, res.data]))
