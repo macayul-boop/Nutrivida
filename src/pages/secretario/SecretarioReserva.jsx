@@ -3,7 +3,7 @@ import ReservaSecretario from "../../componente/ReservaSecretario"
 import FormularioCrearReservaSecreatario from "../../componente/FormularioCrearReservaSecretario"
 import ModalConfirmacion from "../../componente/ModalConfirmacion"
 import FormularioEditarReserva from "../../componente/FormularioEditarReserva"
-import {crearReserva, obtenerTodasReservas} from '../../services/reservaService'
+import {crearReserva, obtenerTodasReservas, cancelarReservaSecretario} from '../../services/reservaService'
 
 /* const DATOS_RESERVAS = [
     {id:1, idCliente: 1, nombreCliente: "Matias", rutCliente: "222606497", idConsulta:2, idNutricionista: 2, nombreNutricionista: "Alavaro", fecha:"10/12/2026", horaInicio:"10:30", estado:"Reservado"}
@@ -49,17 +49,24 @@ function SecretarioReserva(){
     }
 
     // Cambio de estado de la reserva y actualiza la lista de reserva
-    const cancelarReserva = ()=>{
-        const nuevaLista = reservas.map((value)=>{
-            if(value.id === reservaCancelar){
-                value.estado = 'Cancelado'
-            }
-            return value
-        })
+    const cancelarReserva = async ()=>{
 
-        setReservas(nuevaLista);
-        setReservaCancelar(null)
-        setModalCancelarReserva(!modalCancelarReserva)
+         try {
+            const res = await cancelarReservaSecretario(reservaCancelar);
+
+            setReservas(
+                reservas.map(r =>
+                    r.id === reservaCancelar ? res.data : r
+                )
+            );
+
+            setReservaCancelar(null);
+            setModalCancelarReserva(false);
+
+        } catch (error) {
+            console.error("Error al cancelar la reserva:", error);
+        }
+
     }
 
     const mostrarModalEditar = (reserva)=>{
@@ -78,7 +85,7 @@ function SecretarioReserva(){
         if(textBuscador.trim().length === 0){
             obtenerTodasReservas()
                 .then((res)=> setReservas(res.data))
-                
+
         }else{
             setReservas(reservas.filter((value)=> value.rutCliente === textBuscador))
         }
