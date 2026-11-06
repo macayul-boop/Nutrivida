@@ -3,6 +3,7 @@ import FormularioUsuario from '../../componente/FormularioUsuario';
 import Empleado from '../../componente/Empleado';
 import ModalConfirmacion from '../../componente/ModalConfirmacion';
 import DetallesEmpleados from '../../componente/DetallesEmpleado';
+import {obtenerEmpleados, editarEmpleado, eliminarUsuario, crearEmpleado} from '../../services/usuarioService';
 
 function AdministracionEmpleado(){
 
@@ -17,161 +18,15 @@ function AdministracionEmpleado(){
     const [editandoUsuario, setEditandoUsuario] = useState(null)
 
     // lista de usaurios
-    const [listaUsuario, setListaUsuario] = useState(()=>{
-        const usuariosGuardados = localStorage.getItem('usuarios');
-        return usuariosGuardados 
-            ? JSON.parse(usuariosGuardados) 
-            : [
-                {
-                    id:1, 
-                    rut:"222306497", 
-                    nombre:"Matias", 
-                    apellidos:"Cayul", 
-                    telefono:"+56963391571", 
-                    email:"admin@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Admin", 
-                    estado:"Activo"
-                },
-                {
-                    id:2, 
-                    rut:"123456789", 
-                    nombre:"Carolina", 
-                    apellidos:"Fuentes", 
-                    telefono:"+56912345678", 
-                    email: "nutri1@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Nutricionista", 
-                    estado:"Activo", 
-                    horario:[
-                        {
-                            dia:"Lunes",
-                            horaInicio:"09:00",
-                            horaTermino:"17:00"
-                        },
-                        {
-                            dia:"Miercoles",
-                            horaInicio:"09:00",
-                            horaTermino:"17:00"
-                        },  
-                        {
-                            dia:"Viernes",
-                            horaInicio:"09:00",
-                            horaTermino:"17:00"
-                        }
-                    ]
-                },
-                {
-                    id:3, 
-                    rut:"123456789", 
-                    nombre:"Rodrigo", 
-                    apellidos:"Sepulveda", 
-                    telefono:"+56912345678", 
-                    email: "nutri2@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Nutricionista", 
-                    estado:"Activo", 
-                    horario:[
-                        {
-                            dia:"Martes",
-                            horaInicio:"09:00",
-                            horaTermino:"14:00"
-                        },
-                        {
-                            dia:"Jueves",
-                            horaInicio:"09:00",
-                            horaTermino:"14:00"
-                        },
-                        {
-                            dia:"Sabado",
-                            horaInicio:"09:00",
-                            horaTermino:"14:00"
-                        }
-                    ]
-                },
-                {
-                    id:4, 
-                    rut:"123456789", 
-                    nombre:"Daniela", 
-                    apellidos:"Morales", 
-                    telefono:"+56912345678", 
-                    email: "nutri3@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Nutricionista", 
-                    estado:"Activo", 
-                    horario:[
-                        {
-                            dia:"Lunes",
-                            horaInicio:"08:00",
-                            horaTermino:"13:00"
-                        },
-                        {
-                            dia:"Viernes",
-                            horaInicio:"08:00",
-                            horaTermino:"13:00"
-                        }
-                    ]
-                },
-                {
-                    id:5, 
-                    rut:"123456789", 
-                    nombre:"Rodrigo", 
-                    apellidos:"Sepulveda", 
-                    telefono:"+56912345678", 
-                    email: "nutri4@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Nutricionista", 
-                    estado:"Activo", 
-                    horario:[
-                        {
-                            dia:"Martes",
-                            horaInicio:"09:00",
-                            horaTermino:"14:00"
-                        },
-                        {
-                            dia:"Jueves",
-                            horaInicio:"09:00",
-                            horaTermino:"14:00"
-                        },
-                        {
-                            dia:"Sabado",
-                            horaInicio:"09:00",
-                            horaTermino:"14:00"
-                        }
-                    ]
-                },
-                {
-                    id:6, 
-                    rut:"123456789", 
-                    nombre:"Felipe", 
-                    apellidos:"Araya", 
-                    telefono:"+56912345678", 
-                    email: "nutri5@gmail.com", 
-                    contrasena:"1234567", 
-                    rol:"Nutricionista", 
-                    estado:"Activo", 
-                    horario:[
-                        {
-                            dia:"Martes",
-                            horaInicio:"14:00",
-                            horaTermino:"19:00"
-                        },
-                        {
-                            dia:"Viernes",
-                            horaInicio:"14:00",
-                            horaTermino:"19:00"
-                        }
-                    ]
-                }
-            ];
-    })
+    const [listaUsuario, setListaUsuario] = useState(null)
 
     const [detallesUsuarios, setDetallesUsuarios] = useState([])
 
     // Se guarada los datos cada vez que se modifica la lista de usuario
     useEffect(() => {
-        localStorage.setItem('usuarios', JSON.stringify(listaUsuario));
-    }, [listaUsuario]);
+        obtenerEmpleados()
+        .then((res)=> setListaUsuario(res.data))
+    }, []);
 
     // Abrir o cerrar el modal de crear usuario
     const toggle = ()=>{
@@ -249,11 +104,10 @@ function AdministracionEmpleado(){
                         </div>
                     </section>
                     <section>
-                        {listaUsuario
-                            .filter((value)=> value.rol === 'Secretario' || value.rol === 'Nutricionista')
+                        {listaUsuario != null && listaUsuario
                             .map((value, key)=>(
                              <Empleado key={key} datos={value} onEditar={()=> editarUsuario(value)} onEliminar={()=> mostrarModalEliminar(value.id)} onShow={()=> agregarDetallesUsuarios(value)}/>
-                        ))}
+                        )) }
                         
                     </section>
                 </section>

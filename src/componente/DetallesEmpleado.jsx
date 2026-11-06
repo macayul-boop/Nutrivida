@@ -14,7 +14,7 @@ function DetallesEmpleados({datos, onCerrar}){
                 <span className="px-2 py-1.5 bg-gray-200 rounded-sm">{datos.estado}</span>
                 <span className="px-2 py-1.5 bg-gray-200 rounded-sm">{datos.rol}</span>
             </section>
-            <section className="grid grid-cols-1 lg:grid-cols-2 mt-2">
+            <section className="grid grid-cols-1 lg:grid-cols-2 mt-2 gap-5">
                 <ul>
                     <li><span className="font-semibold">Nombre:</span> {datos.nombre} {datos.apellidos}</li>
                     <li><span className="font-semibold">Rut:</span>{datos.rut}</li>
@@ -22,11 +22,11 @@ function DetallesEmpleados({datos, onCerrar}){
                     <li><span className="font-semibold">Email:</span>: {datos.email}</li>
                     <li><span className="font-semibold">Contraseña:</span> {datos.contrasena}</li>
                 </ul>
-                {datos.rol === 'Nutricionista' && 
+                {datos.rol === 'NUTRICIONISTA' && 
                     <div>
                         <p className="font-semibold">Dias de trabajo</p>
-                        {datos.horario.map((value, key)=>(
-                            <li key={key}><span className="font-semibold">Dia:</span>: {value.dia} - <span className="font-semibold">Hora Inicio:</span> {value.horaInicio} - <span className="font-semibold">Hora Final:</span> {value.horaTermino}</li>
+                        {datos.horarioNutricionista.map((value, key)=>(
+                            <li key={key}><span className="font-semibold">Dia:</span>: {value.diaSemana} - <span className="font-semibold">Hora Inicio:</span> {value.horaEntrada} - <span className="font-semibold">Hora Final:</span> {value.horaSalida}</li>
                         ))}
                     </div>
                 }
