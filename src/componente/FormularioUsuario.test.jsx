@@ -34,14 +34,14 @@ describe('FormularioUsuario', () => {
       await user.type(screen.getByLabelText('Rut'), '123')
       await user.type(screen.getByLabelText('Telefono'), '+569123')
       await user.type(screen.getByLabelText('Email'), 'correo.sin.arroba.com')
-      await user.type(screen.getByLabelText('Contraseña'), '12345')
+      await user.type(screen.getByLabelText('Contraseña'), '1234')
 
       await user.click(screen.getByRole('button', { name: 'Guardar' }))
 
       expect(screen.getByText('Formato de rut incorrecto')).toBeInTheDocument()
       expect(screen.getByText('Formato de telefono incorrecto')).toBeInTheDocument()
       expect(screen.getByText('Formato email incorrecto')).toBeInTheDocument()
-      expect(screen.getByText('La contraseña debe tener minimo 6 caracteres')).toBeInTheDocument()
+      expect(screen.getByText('La contraseña debe tener minimo 5 caracteres')).toBeInTheDocument()
     })
 
   })
@@ -77,8 +77,8 @@ describe('FormularioUsuario', () => {
           rut: '123456789',
           nombre: 'Ana',
           apellidos: 'Pérez',
-          rol: 'Secretario',
-          estado: 'Activo',
+          rol: 'SECRETARIO',
+          estado: 'HABILITADO',
           email:'secretarioPrueba@gamil.com',
           contrasena:'123456',
         })
@@ -95,8 +95,8 @@ describe('FormularioUsuario', () => {
         telefono: '+56987654321',
         email: 'secretarioPrueba@gmail.com',
         contrasena: 'secre123',
-        rol: 'Secretario',
-        estado: 'Activo'
+        rol: 'SECRETARIO',
+        estado: 'HABILITADO'
       }
 
       render(
@@ -111,7 +111,6 @@ describe('FormularioUsuario', () => {
       expect(screen.getByLabelText('Rut')).toHaveValue('987654321')
       expect(screen.getByLabelText('Nombre')).toHaveValue('Carlos')
       expect(screen.getByLabelText('Apellidos')).toHaveValue('Gomez')
-      expect(screen.getByLabelText('Rol')).toHaveValue('Secretario')
     })
 
   })

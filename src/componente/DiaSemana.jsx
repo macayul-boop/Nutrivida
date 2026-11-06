@@ -5,7 +5,7 @@ function DiaSemana({index, datos, onEliminar}){
         <article className="flex items-center flex-wrap gap-1.5 border-t border-gray-200">
             <div>
                 <p>Dia</p>
-                <select defaultValue={datos?.dia || ''} name={`dia_${index}`}>
+                <select defaultValue={datos?.diaSemana || ''} name={`dia_${index}`}>
                     <option value="">Sin seleccionar</option>
                     <option value="Lunes">Lunes</option>
                     <option value="Martes">Martes</option>
@@ -18,11 +18,11 @@ function DiaSemana({index, datos, onEliminar}){
             </div>
             <div>
                 <p>Hora Inicio</p>
-                <input type="time" defaultValue={datos?.horaInicio || ''} name={`horaInicio_${index}`}/>
+                <input type="time" defaultValue={datos?.horaEntrada || ''} name={`horaInicio_${index}`}/>
             </div>
             <div>
                 <p>Hora Termino</p>
-                <input type="time" defaultValue={datos?.horaTermino || ''} name={`horaTermino_${index}`}/>
+                <input type="time" defaultValue={datos?.horaSalida || ''} name={`horaTermino_${index}`}/>
             </div>
             <div>
                 <button onClick={onEliminar} className="cursor-pointer">

@@ -12,7 +12,7 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
     const [email, setEmail] = useState('')
     const [contrasena, setContrasena] = useState('')
     const [rol, setRol] = useState('')
-    const [estado, setEstado] = useState('Activo')
+    const [estado, setEstado] = useState('HABILITADO')
     const [dias, setDias] = useState([])
 
     /* eslint-disable react-hooks/set-state-in-effect */
@@ -26,7 +26,7 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
             setContrasena(usuarioEditado.contrasena)
             setRol(usuarioEditado.rol)
             setEstado(usuarioEditado.estado)
-            setDias(usuarioEditado.horario || [])
+            setDias(usuarioEditado.horarioNutricionista || [])
             console.log(usuarioEditado.horario)
         }
 
@@ -64,7 +64,7 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
         setEmail('')
         setContrasena('')
         setRol('')
-        setEstado('Activo')
+        setEstado('HABILITADO')
         setDias([])
     }
 
@@ -108,23 +108,23 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
         // Contraseña
         if(contrasena.trim().length === 0){
             nuevosErrores.contrasena = 'La contraseña es obligatoria'
-        }else if(contrasena.trim().length < 6){
-            nuevosErrores.contrasena = 'La contraseña debe tener minimo 6 caracteres'
+        }else if(contrasena.trim().length < 5){
+            nuevosErrores.contrasena = 'La contraseña debe tener minimo 5 caracteres'
         }
 
         // Rol
-        if(rol != 'Nutricionista' && rol != 'Secretario'){
+        if(rol != 'NUTRICIONISTA' && rol != 'SECRETARIO'){
             nuevosErrores.rol = 'Selecciona un rol'
         }
 
         // Estado
-        if(estado != 'Deshabilitado' && estado != 'Activo'){
+        if(estado != 'DESHABILITADO' && estado != 'HABILITADO'){
             nuevosErrores.estado = 'Selecciona un estado'
         }
 
-        if(rol === 'Secretario'){
+        if(rol === 'SECRETARIO'){
             molde = {
-                "id":usuarioEditado?.id || Date.now(),
+                "id":usuarioEditado?.id || null,
                 "rut":rut,
                 "nombre":nombre,
                 "apellidos":apellidos,
@@ -134,18 +134,18 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
                 "rol":rol,
                 "estado":estado
             }
-        }else if(rol === 'Nutricionista'){
+        }else if(rol === 'NUTRICIONISTA'){
 
             const formData = new FormData(e.target)
             const horarioFinal = dias.map((_, index)=>({
-                dia: formData.get(`dia_${index}`),
-                horaInicio: formData.get(`horaInicio_${index}`),
-                horaTermino: formData.get(`horaTermino_${index}`)
+                diaSemana: formData.get(`dia_${index}`),
+                horaEntrada: formData.get(`horaInicio_${index}`),
+                horaSalida: formData.get(`horaTermino_${index}`)
             }))
 
             // Validar de campos vacio y dias repetidos
-            const hayVacios = horarioFinal.some(h => !h.dia || !h.horaInicio || !h.horaTermino);
-            const diasSeleccionados = horarioFinal.map(h => h.dia);
+            const hayVacios = horarioFinal.some(h => !h.diaSemana || !h.horaEntrada || !h.horaSalida);
+            const diasSeleccionados = horarioFinal.map(h => h.diaSemana);
             const hayRepetidos = new Set(diasSeleccionados).size !== diasSeleccionados.length;
 
             if(hayVacios){
@@ -159,7 +159,7 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
             }
 
             molde = {
-                "id":usuarioEditado?.id || Date.now(),
+                "id":usuarioEditado?.id || null,
                 "rut":rut,
                 "nombre":nombre,
                 "apellidos":apellidos,
@@ -168,7 +168,7 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
                 "contrasena":contrasena,
                 "rol":rol,
                 "estado":estado,
-                "horario":horarioFinal
+                "horarioNutricionista":horarioFinal
             }
             console.log(horarioFinal)
         }
@@ -213,8 +213,8 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
                         <label>Rol
                             <select value={rol} onChange={(e)=> setRol(e.target.value)} name="roles" className="w-full border border-gray-300 rounded-lg px-4 py-2">
                                 <option value="">Sin seleccionar</option>
-                                <option value="Nutricionista">Nutricionista</option>
-                                <option value="Secretario">Secretario</option>
+                                <option value="NUTRICIONISTA">Nutricionista</option>
+                                <option value="SECRETARIO">Secretario</option>
                             </select>
                         </label>
                         {error.rol && <span className="text-red-500">{error.rol}</span>}
@@ -222,8 +222,8 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
                     <div className="flex flex-col w-full gap-1 text-[#0f172a]">
                         <label>Estado
                             <select value={estado} onChange={(e)=> setEstado(e.target.value)} name="estados" className="w-full border border-gray-300 rounded-lg px-4 py-2">
-                                <option value="Activo">Activo</option>
-                                <option value="Deshabilitado">Deshabilitado</option>
+                                <option value="HABILITADO">Habilitado</option>
+                                <option value="DESHABILITADO">Deshabilitado</option>
                             </select>
                         </label>
                         
@@ -231,7 +231,7 @@ function FormularioUsuario({onCerrarModal, usuarioEditado ,onGuardar, onLimpiarE
                     </div>
                 </div>
             
-                {rol === 'Nutricionista' &&
+                {rol === 'NUTRICIONISTA' &&
                     <div>
                         <section className="w-full flex justify-between">
                             <h3>Dias de la semana</h3>
