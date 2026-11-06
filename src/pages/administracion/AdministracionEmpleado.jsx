@@ -39,7 +39,8 @@ function AdministracionEmpleado(){
             setListaUsuario(listaUsuario.map((value) => value.id === usuario.id ? usuario : value))
             setEditandoUsuario(null)
         }else{
-            setListaUsuario([...listaUsuario, usuario])
+            crearEmpleado(usuario)
+                .then((res) => setListaUsuario([...listaUsuario, res.data]))
         }
     }
 
