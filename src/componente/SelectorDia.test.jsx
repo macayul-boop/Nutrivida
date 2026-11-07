@@ -6,8 +6,8 @@ import SelectorDia from './SelectorDia'
 describe('SelectorDia', () => {
 
   const horarioPrueba = [
-    { dia: "Martes", horaInicio: "14:00", horaTermino: "19:00" },
-    { dia: "Viernes", horaInicio: "14:00", horaTermino: "19:00" }
+    { diaSemana: "martes", horaInicio: "14:00", horaTermino: "19:00" },
+    { diaSemana: "viernes", horaInicio: "14:00", horaTermino: "19:00" }
   ]
 
   it('no renderiza botones si el horario está vacío o es undefined', () => {
