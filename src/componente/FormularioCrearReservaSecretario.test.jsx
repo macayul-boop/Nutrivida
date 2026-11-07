@@ -22,79 +22,56 @@ import { obtenerServicios } from '../services/servicioService'
 import { obtenerNutricionistasSimplificados, obtenerClientesSimplificados } from '../services/usuarioService'
 import { obtenerHorasDisponibles } from '../services/reservaService'
 
-beforeEach(() => {
+describe('FormularioCrearReservaSecreatario', () => {
+
+  beforeEach(() => {
     vi.clearAllMocks()
 
-    // 2. DEFINIR LAS RESPUESTAS POR DEFECTO PARA CADA SERVICIO
     obtenerServicios.mockResolvedValue({
-      data: [{
-        id: 1,
-        nombre: 'Primera consulta nutricional',
-        descripcion: 'Descripcion',
-        modalidad: 'PRESENCIAL',
-        precio: 30000,
-        duracionMinutos: 30,
-      },
-      {
-        descripcion: "Seguimiento mensual: medición de indicadores y ajuste del plan vigente.",
-        duracionMinutos: 30,
-        id: 2,
-        modalidad: "PRESENCIAL",
-        nombre: "Control nutricional (seguimiento)",
-        precio: 25000
-      }]
+      data: [
+        {
+          id: 1,
+          nombre: 'Primera consulta nutricional',
+          descripcion: 'Descripcion',
+          modalidad: 'Presencial',
+          precio: 30000,
+          duracionMinutos: 30,
+        },
+        {
+          id: 2,
+          nombre: 'Control nutricional (seguimiento)',
+          descripcion: 'Seguimiento mensual.',
+          modalidad: 'PRESENCIAL',
+          precio: 25000,
+          duracionMinutos: 30,
+        },
+      ],
     })
 
     obtenerNutricionistasSimplificados.mockResolvedValue({
-      data: [{
-        horarioNutricionista: [
-          {
-            id: 3,
-            diaSemana: "martes",
-            horaEntrada: "09:00:00",
-            horaSalida: "18:00:00"
-          },
-          {
-            id: 4,
-            diaSemana: "jueves",
-            horaEntrada: "10:00:00",
-            horaSalida: "18:00:00"
-          }
-        ],
-        id: 6,
-        nombre: "elena"
-      },
-      {
-        horarioNutricionista: [
-            {
-              id: 1,
-              diaSemana: "lunes",
-              horaEntrada: "09:00:00",
-              horaSalida: "14:00:00"
-            },
-            {
-              id: 2,
-              diaSemana: "miercoles",
-              horaEntrada: "10:00:00",
-              horaSalida: "18:00:00"
-            }
-        ],
-        id: 5,
-        nombre: "lucas"
-      }]
+      data: [
+        {
+          id: 6,
+          nombre: 'elena',
+          horarioNutricionista: [
+            { id: 3, diaSemana: 'martes', horaEntrada: '09:00:00', horaSalida: '18:00:00' },
+          ],
+        },
+        {
+          id: 5,
+          nombre: 'lucas',
+          horarioNutricionista: [
+            { id: 1, diaSemana: 'lunes', horaEntrada: '09:00:00', horaSalida: '14:00:00' },
+          ],
+        },
+      ],
     })
 
     obtenerClientesSimplificados.mockResolvedValue({
-      data:[{
-        id: 1,
-        nombre: "santiago",
-        rutCliente: "624345261"
-      },
-      {
-        id: 2,
-        nombre: "sofia",
-        rutCliente: "731892834"
-      }]
+      data: [
+        { id: 1, nombre: 'santiago', rutCliente: '624345261' },
+        { id: 2, nombre: 'sofia', rutCliente: '731892834' },
+      ],
     })
 
     obtenerHorasDisponibles.mockResolvedValue({
@@ -102,19 +79,14 @@ beforeEach(() => {
     })
   })
 
-
-describe('FormularioCrearReservaSecreatario', () => {
-
   it('muestra todos los selectores y la información del primer servicio', async () => {
     render(<FormularioCrearReservaSecreatario onCerrarModal={vi.fn()} onGuardar={vi.fn()} />)
 
-    // Esperar a que los datos asíncronos se carguen y se renderice el formulario
     expect(await screen.findByLabelText(/cliente/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/tipo consulta/i)).toBeInTheDocument()
     expect(screen.getByLabelText(/nutricionista/i)).toBeInTheDocument()
 
-    // Verificar datos del servicio seleccionado por defecto (el primero de la lista)
-    expect(screen.getByText('PRESENCIAL')).toBeInTheDocument()
+    expect(screen.getByText('Presencial')).toBeInTheDocument()
     expect(screen.getByText('$30000')).toBeInTheDocument()
     expect(screen.getByText('30 min')).toBeInTheDocument()
   })
@@ -123,7 +95,8 @@ describe('FormularioCrearReservaSecreatario', () => {
     const user = userEvent.setup()
     render(<FormularioCrearReservaSecreatario onCerrarModal={vi.fn()} onGuardar={vi.fn()} />)
 
-    const selectCliente = screen.getByLabelText(/cliente/i)
+    // Usar findByLabelText para esperar que finalice la carga de cargando=false
+    const selectCliente = await screen.findByLabelText(/cliente/i)
     const selectConsulta = screen.getByLabelText(/tipo consulta/i)
     const selectNutricionista = screen.getByLabelText(/nutricionista/i)
 
@@ -155,9 +128,10 @@ describe('FormularioCrearReservaSecreatario', () => {
 
     render(<FormularioCrearReservaSecreatario onCerrarModal={mockCerrarModal} onGuardar={vi.fn()} />)
 
-    await user.click(screen.getByRole('button', { name: /cancelar/i }))
+    const botonCancelar = await screen.findByRole('button', { name: /cancelar/i })
+    await user.click(botonCancelar)
 
-    expect(mockCerrarModal).toHaveBeenCalled()
+    expect(mockCerrarModal).toHaveBeenCalledTimes(1)
   })
 
 })

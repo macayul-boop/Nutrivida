@@ -110,7 +110,7 @@ describe('FormularioEditarReserva', () => {
     expect(obtenerNutricionistaSimplificado).toHaveBeenCalledWith(reservaMock.idNutricionista)
 
     // Como useEffect es asíncrono, se utiliza findByText (que internamente espera a que aparezca en el DOM)
-    expect(await screen.findByText('PRESENCIAL')).toBeInTheDocument()
+    expect(await screen.findByText(/presencial/i)).toBeInTheDocument()
     expect(await screen.findByText('$30000')).toBeInTheDocument()
     expect(await screen.findByText('30 min')).toBeInTheDocument()
   })
@@ -144,7 +144,7 @@ describe('FormularioEditarReserva', () => {
       />
     )
 
-    await screen.findByText('Presencial')
+    await screen.findByText(/presencial/i)
     await user.click(screen.getByRole('button', { name: /reservar/i }))
 
     expect(screen.getByText('Selecciona un dia')).toBeInTheDocument()

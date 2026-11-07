@@ -6,9 +6,6 @@ import FormularioEditarReserva from "../../componente/FormularioEditarReserva"
 import {crearReserva, obtenerTodasReservas, cancelarReservaSecretario, editarReservaSecretario} from '../../services/reservaService'
 import { obtenerReservasDeUnCliente } from '../../services/usuarioService'
 
-/* const DATOS_RESERVAS = [
-    {id:1, idCliente: 1, nombreCliente: "Matias", rutCliente: "222606497", idConsulta:2, idNutricionista: 2, nombreNutricionista: "Alavaro", fecha:"10/12/2026", horaInicio:"10:30", estado:"Reservado"}
-] */
 
 function SecretarioReserva(){
 
