@@ -1,8 +1,11 @@
-import { useState } from "react"
+
+import { useState, useEffect } from "react"
 import SelectorDia from "../../componente/SelectorDia"
 import DetalleReserva from "../../componente/DetalleReserva"
+import { obtenerNutricionistasSimplificados } from '../../services/usuarioService'
+import { obtenerReservasDeUnNutricionista } from '../../services/reservaService'
 
-const nutricionistas = [
+/* const nutricionistas = [
     {id:2, nombre:"Carolina", apellidos:"Fuentes", horario:[{dia:"Lunes",horaInicio:"09:00",horaTermino:"17:00"},{dia:"Miercoles",horaInicio:"09:00",horaTermino:"17:00"},  { dia:"Viernes",horaInicio:"09:00",horaTermino:"17:00"}]},
     {id:3, nombre:"Rodrigo", apellidos:"Sepulveda", horario:[{dia:"Martes",horaInicio:"09:00",horaTermino:"14:00"},{dia:"Jueves",horaInicio:"09:00",horaTermino:"14:00"},{dia:"Sabado",horaInicio:"09:00",horaTermino:"14:00"}]},
     {id:4, nombre:"Daniela", apellidos:"Morales", horario:[{dia:"Lunes", horaInicio:"08:00", horaTermino:"13:00"},{dia:"Viernes",horaInicio:"08:00",horaTermino:"13:00"}]},
@@ -30,18 +33,60 @@ const reservas = [
     {id:13, idNutricionista:6, idCliente: 1, nombreCliente: "Matias", rutCliente: "222606497", idConsulta:2, nombreConsulta:"Primera consulta nutricional", fecha:"6/10/2026", horaInicio:"10:30"},
     {id:14, idNutricionista:6, idCliente: 2, nombreCliente: "Benjamin", rutCliente: "222606498", idConsulta:3, nombreConsulta:"Control nutricional quincenal", fecha:"6/10/2026", horaInicio:"12:00"},
     {id:15, idNutricionista:6, idCliente: 3, nombreCliente: "Horacio", rutCliente: "222606499", idConsulta:2, nombreConsulta:"Primera consulta nutricional", fecha:"9/10/2026", horaInicio:"10:30"}
-]
+] */
+
+const formatearFecha = (fecha) => {
+    const año = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+
+    return `${año}-${mes}-${dia}`;
+};
 
 function SecretarioHorario(){
 
-    const [nutricionistaId, setNutricionistaId] = useState(nutricionistas[0].id)
+    const [nutricionistas, setNutricionista] = useState([])
+    const [reservas, setReservas] = useState([])
+    const [nutricionistaId, setNutricionistaId] = useState(null)
     const [fecha, setFecha] = useState(null)
+
+    /* eslint-disable react-hooks/set-state-in-effect */
+    useEffect(()=>{
+        try {
+            obtenerNutricionistasSimplificados()
+                .then((res)=> {
+                    setNutricionista(res.data)
+                    setNutricionistaId(res.data[0].id)
+                    console.log(res.data)
+                    console.log(res.data[0])
+                })
+        } catch (error) {
+            console.error(error)
+        }
+    }, [])
+    
+
+    useEffect(()=>{
+        try {
+            if(fecha == null) return
+
+            obtenerReservasDeUnNutricionista(nutricionistaId, formatearFecha(fecha))
+                .then((res)=>{
+                    setReservas(res.data)
+                    console.log(res.data)
+                })
+        } catch (error) {
+            console.error(error)
+        }
+    }, [fecha, nutricionistaId])
+    /* eslint-enable react-hooks/set-state-in-effect */
 
     const nutricionistaSeleccionado = nutricionistas.find((n) => n.id === Number(nutricionistaId));
 
     const handleNutricionistaChange = (e) => {
         setNutricionistaId(Number(e.target.value));
         setFecha(null);
+        setReservas([])
     };
 
     const handleDiaChange = (nuevaFecha) => {
@@ -59,7 +104,7 @@ function SecretarioHorario(){
                     <label className="font-semibold text-lg flex flex-col">Nutricionista
                         <select onChange={(e) => handleNutricionistaChange(e)} className="px-4 py-2 border border-gray-300 rounded-lg">
                             {nutricionistas.map((value)=>(
-                                <option key={value.id} value={value.id}>{value.nombre} {value.apellidos}</option>
+                                <option key={value.id} value={value.id}>{value.nombre}</option>
                             ))}
                         </select>
                     </label>
@@ -67,7 +112,7 @@ function SecretarioHorario(){
 
                 <section className="mt-5">
                     <SelectorDia
-                        horario={nutricionistaSeleccionado?.horario}
+                        horario={nutricionistaSeleccionado?.horarioNutricionista}
                         diaSeleccionado={fecha}
                         onSeleccionarDia={handleDiaChange}
                         diaSiguiente={false}
@@ -78,10 +123,10 @@ function SecretarioHorario(){
                     
                     {fecha == null && <span className="text-gray-700">Selecciona un dia</span>}
 
-                    {((reservas.filter((value)=> value.fecha == fecha?.toLocaleDateString() && value.idNutricionista == nutricionistaId).length === 0) && fecha != null) && <span className="text-gray-700">No hay citas</span>}
+                    {(reservas.length == 0 && fecha != null) && <span className="text-gray-700">No hay citas</span>}
 
                     {reservas
-                        .filter((value)=> value.fecha == fecha?.toLocaleDateString() && value.idNutricionista == nutricionistaId)
+                        .filter((value) => value.estado === "RESERVADA")
                         .map((value)=>(
                             <DetalleReserva key={value.id} datos={value}/>
                         ))

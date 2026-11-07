@@ -45,7 +45,6 @@ function SelectorDia({horario = [], diaSeleccionado, onSeleccionarDia, diaSiguie
         fechaEvaluada.setDate(fechaEvaluada.getDate() + 1);
       }
 
-      console.log(fechas)
       return fechas;
     }, [horario]);
 
