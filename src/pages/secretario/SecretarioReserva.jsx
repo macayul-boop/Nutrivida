@@ -3,7 +3,8 @@ import ReservaSecretario from "../../componente/ReservaSecretario"
 import FormularioCrearReservaSecreatario from "../../componente/FormularioCrearReservaSecretario"
 import ModalConfirmacion from "../../componente/ModalConfirmacion"
 import FormularioEditarReserva from "../../componente/FormularioEditarReserva"
-import {crearReserva, obtenerTodasReservas, cancelarReservaSecretario} from '../../services/reservaService'
+import {crearReserva, obtenerTodasReservas, cancelarReservaSecretario, editarReservaSecretario} from '../../services/reservaService'
+import { obtenerReservasDeUnCliente } from '../../services/usuarioService'
 
 /* const DATOS_RESERVAS = [
     {id:1, idCliente: 1, nombreCliente: "Matias", rutCliente: "222606497", idConsulta:2, idNutricionista: 2, nombreNutricionista: "Alavaro", fecha:"10/12/2026", horaInicio:"10:30", estado:"Reservado"}
@@ -60,9 +61,6 @@ function SecretarioReserva(){
                 )
             );
 
-            setReservaCancelar(null);
-            setModalCancelarReserva(false);
-
         } catch (error) {
             console.error("Error al cancelar la reserva:", error);
         }
@@ -70,24 +68,51 @@ function SecretarioReserva(){
     }
 
     const mostrarModalEditar = (reserva)=>{
-        setModalEditarReserva(!modalEditarReserva)
         setReservaEditar(reserva)
+        setModalEditarReserva(true)
     }
 
-    const editarRserva = (reserva)=>{
+    const editarRserva = async (reserva)=>{
         console.log(reserva)
-        const nuevaLista = reservas.map((value)=> value.id === reserva.id ? reserva : value)
-        console.log(nuevaLista)
-        setReservas(reservas.map((value)=> (value.id === reserva.id ? reserva : value)))
+
+        try {
+
+            const idReservaEditada = reservaEditar.id;
+            const res = await editarReservaSecretario(idReservaEditada, reserva)
+
+            setModalEditarReserva(false)
+            setReservaEditar(null)
+
+            setReservas(
+                reservas.map(r =>
+                    r.id === idReservaEditada ? res.data : r
+                )
+            );
+
+        } catch (error) {
+            console.log(error)
+        }
+
     }
 
-    const buscador = ()=>{
+    const buscador = async ()=>{
         if(textBuscador.trim().length === 0){
             obtenerTodasReservas()
                 .then((res)=> setReservas(res.data))
 
         }else{
-            setReservas(reservas.filter((value)=> value.rutCliente === textBuscador))
+
+            try {
+                
+                const res = await obtenerReservasDeUnCliente(textBuscador.trim())
+
+                setReservas(res.data);                
+
+            } catch (error) {
+                console.log(error)
+                setReservas([])
+            }
+
         }
     }
 
@@ -137,7 +162,15 @@ function SecretarioReserva(){
                     textEvento={"Cancelar Reserva"}
                 />
             }
-            {modalEditarReserva && <FormularioEditarReserva datos={reservaEditar} onCerrarModal={()=>setModalEditarReserva(!modalEditarReserva)} onGuardar={editarRserva}/>}
+            {modalEditarReserva && 
+                <FormularioEditarReserva 
+                    datos={reservaEditar} 
+                    onCerrarModal={()=>{
+                        setModalEditarReserva(false)
+                        setReservaEditar(null)
+                    }} 
+                    onGuardar={editarRserva}/>
+            }
         </div>
     )
 }
