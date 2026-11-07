@@ -5,31 +5,6 @@ import {obtenerClientesSimplificados, obtenerNutricionistasSimplificados, } from
 import {obtenerHorasDisponibles} from '../services/reservaService'
 import {obtenerServicios} from '../services/servicioService'
 
-/* const nutricionistas = [
-    {id:2, nombre:"Carolina", apellidos:"Fuentes", horario:[{dia:"Lunes",horaInicio:"09:00",horaTermino:"17:00"},{dia:"Miercoles",horaInicio:"09:00",horaTermino:"17:00"},  { dia:"Viernes",horaInicio:"09:00",horaTermino:"17:00"}]},
-    {id:3, nombre:"Rodrigo", apellidos:"Sepulveda", horario:[{dia:"Martes",horaInicio:"09:00",horaTermino:"14:00"},{dia:"Jueves",horaInicio:"09:00",horaTermino:"14:00"},{dia:"Sabado",horaInicio:"09:00",horaTermino:"14:00"}]},
-    {id:4, nombre:"Daniela", apellidos:"Morales", horario:[{dia:"Lunes", horaInicio:"08:00", horaTermino:"13:00"},{dia:"Viernes",horaInicio:"08:00",horaTermino:"13:00"}]},
-    {id:5, nombre:"Rodrigo", apellidos:"Sepulveda", horario:[{dia:"Martes",horaInicio:"09:00",horaTermino:"14:00"},{dia:"Jueves",horaInicio:"09:00",horaTermino:"14:00"},{dia:"Sabado",horaInicio:"09:00",horaTermino:"14:00"}]},
-    {id:6, nombre:"Felipe", apellidos:"Araya", horario:[{dia:"Martes",horaInicio:"14:00",horaTermino:"19:00"},{dia:"Viernes",horaInicio:"14:00",horaTermino:"19:00"}]}
-]
-
-const tipoConsultas = [
-    {id:1, nombre:"Primera consulta nutricional", modalidad:"Presencial", precio:30000, duracion:30},
-    {id:2, nombre:"Control nutricional (seguiminento)", modalidad:"Presencial", precio:30000, duracion:30},
-    {id:3, nombre:"Control nutricional quincinal", modalidad:"Presencial", precio:30000, duracion:30},
-    {id:4, nombre:"Consulta de urgencia", modalidad:"Presencial", precio:30000, duracion:30},
-    {id:5, nombre:"Antropometria completa", modalidad:"Presencial", precio:30000, duracion:30},
-    {id:6, nombre:"Bioimpedanciometría", modalidad:"Presencial", precio:30000, duracion:30},
-    {id:7, nombre:"Encuesta de hábitos alimenticios", modalidad:"Presencial", precio:30000, duracion:30},
-    {id:8, nombre:"Análisis de exámenes de laboratorio.", modalidad:"Presencial", precio:30000, duracion:30}
-    
-]
-
-const clientes = [
-    {id:7, nombre:"Benjamin", apellidos:"Herrera", rut: "222606498"},
-    {id:8, nombre:"Messi", apellidos:"Cristiano", rut:"222606499"}
-] */
-
 const formatearFecha = (fecha) => {
     const año = fecha.getFullYear();
     const mes = String(fecha.getMonth() + 1).padStart(2, '0');
