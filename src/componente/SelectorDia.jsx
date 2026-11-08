@@ -60,7 +60,6 @@ function SelectorDia({horario = [], diaSeleccionado, onSeleccionarDia, diaSiguie
                     onClick={(e)=> {
                         e.preventDefault()
                         onSeleccionarDia(dia.fechaCompleta)
-                        console.log(dia.fechaCompleta)
                     }}
                     className={`flex flex-col items-center justify-center w-[60px] h-[80px] rounded-lg ${seleccionado ? 'border border-[#0d8a5f]' : 'border border-gray-500'} ${seleccionado ? 'bg-[#e8f5e9]' :'bg-[#f4f5f7]'} cursor-pointer font-bold`}
                     >
