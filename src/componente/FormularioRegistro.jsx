@@ -1,7 +1,12 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
+
 function FormularioRegistro(){
+
     const navigate = useNavigate()
+    const {register} = useAuth()
+
     const [error, setError] = useState({})
     const [nombre, setNombre] = useState("")
     const [apellidos, setApellidos] = useState("")
@@ -10,9 +15,9 @@ function FormularioRegistro(){
     const [email, setEmail] = useState("")
     const [contrasena, setContrasena] = useState("")
     const [confirmacionContrasena, setConfirmacionContrasena] = useState("")
-    const enviarFormulario = (e)=>{
+
+    const enviarFormulario = async (e)=>{
         e.preventDefault()
-        
 
         let nuevosErrores = {}
 
@@ -44,7 +49,7 @@ function FormularioRegistro(){
 
         if(contrasena.trim().length === 0){
             nuevosErrores.contrasena = "La contraseña es obligatoria"
-        }else if(contrasena.trim().length < 6){
+        }else if(contrasena.trim().length < 5){
             nuevosErrores.contrasena = "La contraseña debe tener minimo 6 caracteres"
         }
 
@@ -56,50 +61,39 @@ function FormularioRegistro(){
 
         setError(nuevosErrores)
 
-        // Ddetener el registro
         if(Object.keys(nuevosErrores).length > 0){
             return
         }
 
-        // Leer los usuarios actuales
-        const usuarios = JSON.parse(localStorage.getItem("usuarios")) || []
+        try {
 
-        // Duplicados
-        const existeEmail = usuarios.some(
-            usuario => usuario.email.trim().toLowerCase() === email.trim().toLowerCase()
-        )
+            const resData = await register({
+                rut: rut.trim(),
+                nombre: nombre.trim(),
+                apellidos: apellidos.trim(),
+                telefono: telefono.trim(),
+                email: email.trim(),
+                contrasena: contrasena.trim(),
+                rol: "CLIENTE",
+                estado: "HABILITADO"
+            })
 
-        if(existeEmail){
-            setError({ email: "Este email ya está registrado" })
-            return
+            let rol = resData.roles[0];
+
+            if(rol == "CLIENTE"){
+                navigate("/");
+            }
+                
+            setNombre("")
+            setApellidos("")
+            setRut("")
+            setTelefono("")
+            setEmail("")
+            setContrasena("")
+            setConfirmacionContrasena("")
+        } catch (error) {
+            console.log(error)
         }
-
-        const nuevoCliente = {
-            id: Date.now(),
-            rut: rut.trim(),
-            nombre: nombre.trim(),
-            apellidos: apellidos.trim(),
-            telefono: telefono.trim(),
-            email: email.trim(),
-            contrasena: contrasena,
-            rol: "Cliente",
-            estado: "Activo"
-        }
-
-        localStorage.setItem(
-            "usuarios",
-            JSON.stringify([...usuarios, nuevoCliente])
-        )
-
-
-        setNombre("")
-        setApellidos("")
-        setRut("")
-        setTelefono("")
-        setEmail("")
-        setContrasena("")
-        setConfirmacionContrasena("")
-        navigate("/login")
     }
 
     return(
