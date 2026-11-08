@@ -1,9 +1,12 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import SelectorDia from "./SelectorDia"
 import SelectorHora from "./SelectorHora"
+import { obtenerNutricionistaSimplificado } from '../services/usuarioService'
+import { obtenerUnServicio } from '../services/servicioService'
+import { obtenerHorasDisponibles } from '../services/reservaService'
 
 
-const nutricionistas = [
+/* const nutricionistas = [
     {id:2, nombre:"Carolina", apellidos:"Fuentes", horario:[{dia:"Lunes",horaInicio:"09:00",horaTermino:"17:00"},{dia:"Miercoles",horaInicio:"09:00",horaTermino:"17:00"},  { dia:"Viernes",horaInicio:"09:00",horaTermino:"17:00"}]},
     {id:3, nombre:"Rodrigo", apellidos:"Sepulveda", horario:[{dia:"Martes",horaInicio:"09:00",horaTermino:"14:00"},{dia:"Jueves",horaInicio:"09:00",horaTermino:"14:00"},{dia:"Sabado",horaInicio:"09:00",horaTermino:"14:00"}]},
     {id:4, nombre:"Daniela", apellidos:"Morales", horario:[{dia:"Lunes", horaInicio:"08:00", horaTermino:"13:00"},{dia:"Viernes",horaInicio:"08:00",horaTermino:"13:00"}]},
@@ -21,16 +24,81 @@ const tipoConsultas = [
     {id:7, nombre:"Encuesta de hábitos alimenticios", modalidad:"Presencial", precio:30000, duracion:30},
     {id:8, nombre:"Análisis de exámenes de laboratorio.", modalidad:"Presencial", precio:30000, duracion:30}
     
-]
+] */
+
+const formatearFecha = (fecha) => {
+    const año = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+
+    return `${año}-${mes}-${dia}`;
+};
+
 
 function FormularioEditarReserva({datos, onCerrarModal, onGuardar}){
+
+    const [tipoConsulta, setTipoConsulta] = useState(null)
+    const [nutricionista, setNutricionista] = useState(null)
+    const [horasDisponibles, setHorasDisponibles] = useState([]);
 
     const [fechaReserva, setFechaReserva] = useState(null)
     const [horaReserva, setHoraReserva] = useState(null);
     const [error, setError] = useState({})
 
-    const nutricionistaSeleccionado = nutricionistas.find((n) => n.id === Number(datos?.idNutricionista));
-    const servicioSeleccionado = tipoConsultas.find((s) => s.id === Number(datos?.idConsulta));
+    useEffect(()=>{
+
+        const obtenerDatos = async () => {
+            try {
+                
+                const [resServicio, resNutricionista] = await Promise.all([
+                    obtenerUnServicio(datos.idServicio),
+                    obtenerNutricionistaSimplificado(datos.idNutricionista)
+                ])
+
+                 console.log("Respuesta Servicio Completa:", resServicio);
+                console.log("Datos Servicio (.data):", resServicio?.data);
+                console.log("Datos Nutricionista (.data):", resNutricionista?.data);
+
+                setTipoConsulta(resServicio.data)
+                setNutricionista(resNutricionista.data)
+
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        obtenerDatos()
+
+    }, [datos.idServicio, datos.idNutricionista])
+
+    /* eslint-disable react-hooks/set-state-in-effect */
+    useEffect(() => {
+    
+        // Si falta alguno de los datos, no hacemos la consulta
+        if (!nutricionista || !tipoConsulta || !fechaReserva) {
+            setHorasDisponibles([]);
+            return;
+        }
+
+        const cargarHorasDisponibles = async () => {
+        
+            setHorasDisponibles([]);
+
+            const fecha = formatearFecha(fechaReserva);
+
+            const res = await obtenerHorasDisponibles(
+                nutricionista.id,
+                tipoConsulta.id,
+                fecha
+            );
+
+            setHorasDisponibles(res.data);
+        };
+
+        cargarHorasDisponibles();
+
+    }, [fechaReserva]);
+    /* eslint-enable react-hooks/set-state-in-effect */
 
     const handleDiaChange = (nuevaFecha) => {
         setFechaReserva(nuevaFecha);
@@ -60,25 +128,14 @@ function FormularioEditarReserva({datos, onCerrarModal, onGuardar}){
         if(Object.keys(nuevosErrores).length === 0){
 
             const nuevoDato = {
-                id: datos.id, 
-                idCliente: datos.idCliente, 
-                nombreCliente: datos.nombreCliente, 
-                rutCliente: datos.rutCliente, 
-                idConsulta: datos.idConsulta, 
-                idNutricionista: datos.idNutricionista, 
-                nombreNutricionista: datos.nombreNutricionista, 
-                fecha:fechaReserva.toLocaleDateString(),
-                horaInicio:horaReserva,
-                estado: datos.estado
+                fecha: formatearFecha(fechaReserva),
+                horaInicio: horaReserva
             }
-            
-
 
             onGuardar(nuevoDato)
             setError({})
             setFechaReserva(null)
             setHoraReserva(null)
-            onCerrarModal()
             console.log(nuevoDato)
         }else{
             console.log("Hay un error")
@@ -88,24 +145,30 @@ function FormularioEditarReserva({datos, onCerrarModal, onGuardar}){
     return(
         <div className="fixed inset-0 bg-black/60 z-50 flex items-start justify-center p-4 overflow-y-scroll">
             <form className="bg-white max-w-2xl mx-auto mt-5 md:mt-20 px-5 py-6 border border-gray-200 rounded-lg">
-                <section className="flex justify-between items-center px-2 sm:px-10 md:px-25 my-5">
-                    <div>
-                        <p className="text-sm text-gray-600">Modalidad</p>
-                        <p className="text-gray-950">{servicioSeleccionado.modalidad}</p>
-                    </div>
-                    <div>
-                        <p className="text-sm text-gray-600">Precio</p>
-                        <p className="text-gray-950">${servicioSeleccionado.precio}</p>
-                    </div>
-                    <div>
-                        <p className="text-sm text-gray-600">Duracion</p>
-                        <p className="text-gray-950">{servicioSeleccionado.duracion} min</p>
-                    </div>
+                <section className="">
+
+                    {tipoConsulta &&
+                        <div className="flex justify-between items-center px-2 sm:px-10 md:px-25 my-5">
+                            <div>
+                                <p className="text-sm text-gray-600">Modalidad</p>
+                                <p className="text-gray-950">{tipoConsulta.modalidad}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600">Precio</p>
+                                <p className="text-gray-950">${tipoConsulta.precio}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-gray-600">Duracion</p>
+                                <p className="text-gray-950">{tipoConsulta.duracionMinutos} min</p>
+                            </div>
+                        </div>
+                    }
+                    
                 </section>
                 <section>
                     <h4>Dias disponibles</h4>
                     <SelectorDia
-                        horario={nutricionistaSeleccionado?.horario}
+                        horario={nutricionista?.horarioNutricionista}
                         diaSeleccionado={fechaReserva}
                         onSeleccionarDia={handleDiaChange}
                     />
@@ -113,15 +176,14 @@ function FormularioEditarReserva({datos, onCerrarModal, onGuardar}){
                     <h4>Horas disponibles</h4>
                     <SelectorHora
                         fechaSeleccionada={fechaReserva}
-                        horarioNutricionista={nutricionistaSeleccionado?.horario}
-                        duracionServicioMinutos={servicioSeleccionado?.duracion}
+                        horasDisponibles={horasDisponibles}
                         horaSeleccionada={horaReserva}
                         onSeleccionarHora={setHoraReserva}
                     />
                 </section>
                 <section className="flex justify-center">
-                    {error && <span className="text-red-500 text-center">{error.fecha}</span>}
-                    {error && <span className="text-red-500 text-center">{error.hora}</span>}
+                    {error.fecha && <span className="text-red-500 text-center">{error.fecha}</span>}
+                    {error.hora && <span className="text-red-500 text-center">{error.hora}</span>}
                 </section> 
                 <section className="flex justify-end gap-5 py-5">
                     <button  onClick={(e)=> cancelar(e)} className="bg-gray-300 rounded-lg py-2 px-4 text-gray-700 font-semibold">

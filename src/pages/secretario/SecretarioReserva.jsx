@@ -1,17 +1,16 @@
-import { useState } from "react"
+import { useState, useEffect} from "react"
 import ReservaSecretario from "../../componente/ReservaSecretario"
 import FormularioCrearReservaSecreatario from "../../componente/FormularioCrearReservaSecretario"
 import ModalConfirmacion from "../../componente/ModalConfirmacion"
 import FormularioEditarReserva from "../../componente/FormularioEditarReserva"
+import {crearReserva, obtenerTodasReservas, cancelarReservaSecretario, editarReservaSecretario} from '../../services/reservaService'
+import { obtenerReservasDeUnCliente } from '../../services/usuarioService'
 
-const DATOS_RESERVAS = [
-    {id:1, idCliente: 1, nombreCliente: "Matias", rutCliente: "222606497", idConsulta:2, idNutricionista: 2, nombreNutricionista: "Alavaro", fecha:"10/12/2026", horaInicio:"10:30", estado:"Reservado"}
-]
 
 function SecretarioReserva(){
 
     // Lista de reservas
-    const [reservas, setReservas] = useState(DATOS_RESERVAS)
+    const [reservas, setReservas] = useState([])
 
     // Para mostra el modal de crear reserva
     const [modalCrearReserva, setModalCrearReserva] = useState(false)
@@ -27,9 +26,17 @@ function SecretarioReserva(){
 
     const [textBuscador, setTextBuscador] = useState('')
 
+    /* eslint-disable react-hooks/set-state-in-effect */
+    useEffect(() => {
+        obtenerTodasReservas()
+            .then((res)=> setReservas(res.data))
+    }, []);
+    /* eslint-enable react-hooks/set-state-in-effect */
+
     // Crear una reserva
-    const crearReserva = (datos)=>{
-        setReservas([...reservas, datos])
+    const crearReservaFuncion = (datos)=>{
+        crearReserva(datos)
+            .then((res)=> setReservas([...reservas, res.data]))
     }
 
     // Mostar el modal y asignar el id de la reserva a cancelar
@@ -40,36 +47,69 @@ function SecretarioReserva(){
     }
 
     // Cambio de estado de la reserva y actualiza la lista de reserva
-    const cancelarReserva = ()=>{
-        const nuevaLista = reservas.map((value)=>{
-            if(value.id === reservaCancelar){
-                value.estado = 'Cancelado'
-            }
-            return value
-        })
+    const cancelarReserva = async ()=>{
 
-        setReservas(nuevaLista);
-        setReservaCancelar(null)
-        setModalCancelarReserva(!modalCancelarReserva)
+         try {
+            const res = await cancelarReservaSecretario(reservaCancelar);
+
+            setReservas(
+                reservas.map(r =>
+                    r.id === reservaCancelar ? res.data : r
+                )
+            );
+
+        } catch (error) {
+            console.error("Error al cancelar la reserva:", error);
+        }
+
     }
 
     const mostrarModalEditar = (reserva)=>{
-        setModalEditarReserva(!modalEditarReserva)
         setReservaEditar(reserva)
+        setModalEditarReserva(true)
     }
 
-    const editarRserva = (reserva)=>{
+    const editarRserva = async (reserva)=>{
         console.log(reserva)
-        const nuevaLista = reservas.map((value)=> value.id === reserva.id ? reserva : value)
-        console.log(nuevaLista)
-        setReservas(reservas.map((value)=> (value.id === reserva.id ? reserva : value)))
+
+        try {
+
+            const idReservaEditada = reservaEditar.id;
+            const res = await editarReservaSecretario(idReservaEditada, reserva)
+
+            setModalEditarReserva(false)
+            setReservaEditar(null)
+
+            setReservas(
+                reservas.map(r =>
+                    r.id === idReservaEditada ? res.data : r
+                )
+            );
+
+        } catch (error) {
+            console.log(error)
+        }
+
     }
 
-    const buscador = ()=>{
+    const buscador = async ()=>{
         if(textBuscador.trim().length === 0){
-            setReservas(DATOS_RESERVAS)
+            obtenerTodasReservas()
+                .then((res)=> setReservas(res.data))
+
         }else{
-            setReservas(reservas.filter((value)=> value.rutCliente === textBuscador))
+
+            try {
+                
+                const res = await obtenerReservasDeUnCliente(textBuscador.trim())
+
+                setReservas(res.data);                
+
+            } catch (error) {
+                console.log(error)
+                setReservas([])
+            }
+
         }
     }
 
@@ -107,7 +147,7 @@ function SecretarioReserva(){
                     </section>
                 </section>
             </main>
-            {modalCrearReserva && <FormularioCrearReservaSecreatario onCerrarModal={()=> setModalCrearReserva(!modalCrearReserva)} onGuardar={crearReserva}/>}
+            {modalCrearReserva && <FormularioCrearReservaSecreatario onCerrarModal={()=> setModalCrearReserva(!modalCrearReserva)} onGuardar={crearReservaFuncion}/>}
             {modalCancelarReserva && 
                 <ModalConfirmacion 
                     titulo={"¿Estas seguro de que quiere cancelar la reserva?"} 
@@ -119,7 +159,15 @@ function SecretarioReserva(){
                     textEvento={"Cancelar Reserva"}
                 />
             }
-            {modalEditarReserva && <FormularioEditarReserva datos={reservaEditar} onCerrarModal={()=>setModalEditarReserva(!modalEditarReserva)} onGuardar={editarRserva}/>}
+            {modalEditarReserva && 
+                <FormularioEditarReserva 
+                    datos={reservaEditar} 
+                    onCerrarModal={()=>{
+                        setModalEditarReserva(false)
+                        setReservaEditar(null)
+                    }} 
+                    onGuardar={editarRserva}/>
+            }
         </div>
     )
 }

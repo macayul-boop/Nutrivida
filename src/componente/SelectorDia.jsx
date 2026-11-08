@@ -21,7 +21,7 @@ function SelectorDia({horario = [], diaSeleccionado, onSeleccionarDia, diaSiguie
       if (!horario || horario.length === 0) return [];
 
       // Extraemos solo los nombres de los días y los convertimos a números (0 a 6)
-      const diasNumeros = horario.map((h) => MAPA_DIAS[h.dia.toLowerCase()]);
+      const diasNumeros = horario.map((h) => MAPA_DIAS[h.diaSemana.toLowerCase()]);
 
       const fechas = [];
       let fechaEvaluada = new Date();
@@ -45,7 +45,6 @@ function SelectorDia({horario = [], diaSeleccionado, onSeleccionarDia, diaSiguie
         fechaEvaluada.setDate(fechaEvaluada.getDate() + 1);
       }
 
-      console.log(fechas)
       return fechas;
     }, [horario]);
 
@@ -61,7 +60,6 @@ function SelectorDia({horario = [], diaSeleccionado, onSeleccionarDia, diaSiguie
                     onClick={(e)=> {
                         e.preventDefault()
                         onSeleccionarDia(dia.fechaCompleta)
-                        console.log(dia.fechaCompleta)
                     }}
                     className={`flex flex-col items-center justify-center w-[60px] h-[80px] rounded-lg ${seleccionado ? 'border border-[#0d8a5f]' : 'border border-gray-500'} ${seleccionado ? 'bg-[#e8f5e9]' :'bg-[#f4f5f7]'} cursor-pointer font-bold`}
                     >
