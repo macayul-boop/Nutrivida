@@ -4,11 +4,11 @@ function Servicio({datos, onEditar, onEliminar}){
         <article className="w-full grid grid-cols-5 py-2 px-4 items-center">
             <p>{datos.nombre}</p>
             <p>${datos.precio}</p>
-            <p>{datos.duracion} minutos</p>
-            <p>{datos.modalidad}</p>
+            <p>{datos.duracionMinutos} minutos</p>
+            <p>{datos.modalidad === 'PRESENCIAL' ? 'Presencial' : datos.modalidad === 'ONLINE' ? 'Online' : datos.modalidad}</p>
 
             <div className="flex gap-1.5">
-                <button onClick={onEditar} className="cursor-pointer">
+                <button onClick={onEditar} className="cursor-pointer" aria-label={`Editar ${datos.nombre}`}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -24,7 +24,7 @@ function Servicio({datos, onEditar, onEliminar}){
                         />
                     </svg>
                 </button>
-                <button onClick={onEliminar} className="cursor-pointer">
+                <button onClick={onEliminar} className="cursor-pointer" aria-label={`Eliminar ${datos.nombre}`}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
