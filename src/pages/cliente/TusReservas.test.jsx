@@ -1,150 +1,136 @@
-import {render, screen} from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
-import { describe, it, expect, vi} from "vitest"
-import TusReservas, {ReservaCliente} from "./TusReservas"
-import { reservaCliente } from "../../test/mocks"
+import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import TusReservas from './TusReservas'
+import { obtenerReservasDeUnCliente, editarReservaCliente, cancelarReservaCliente, obtenerHorasDisponibles } from '../../services/reservaService'
+import { obtenerUnServicio } from '../../services/servicioService'
+import { obtenerNutricionistaSimplificado } from '../../services/usuarioService'
 
-
-vi.mock("../../componente/FormularioEditarReserva", () => ({
-    default: ({onCerrarModal, onGuardar, datos}) => (
-        <div data-testid="modal-editar">
-            <span>Editando reserva {datos.id}</span>
-            <button onClick={() => onGuardar({id:datos.id,horaInicio: "16:00"})}>Guardar Cambios</button>
-            <button onClick={onCerrarModal}>Cerrar</button>
-        </div>
-    ),
+vi.mock('../../services/reservaService', ()=>({
+    obtenerReservasDeUnCliente: vi.fn(),
+    editarReservaCliente: vi.fn(),
+    cancelarReservaCliente: vi.fn(),
+    obtenerHorasDisponibles: vi.fn()
 }))
-vi.mock("../../componente/ModalConfirmacion", () => ({
-    default: ({titulo, onCancelar, onEvento, textEvento}) => (
-        <div data-testid="modal-confirmacion">
-            <p>{titulo}</p>
-            <button onClick={onEvento}>{textEvento}</button>
-            <button onClick={onCancelar}>Volver</button>
-        </div>
-    ),
-}))
-vi.mock("../../componente/DetallesInforme", () => ({
-    default: ({datos, onCerrar}) => (
-        <div data-testid="detalles-informe">
-            <p>Informe: {datos.nombreConsulta}</p>
-            <button onClick={onCerrar}>Cerrar Informe</button>
-        </div>
-    ),
-}))
+vi.mock('../../services/servicioService', ()=>({obtenerUnServicio: vi.fn()}))
+vi.mock('../../services/usuarioService', ()=>({obtenerNutricionistaSimplificado: vi.fn()}))
 
+const reserva = {
+    id:74,
+    idCliente:7,
+    idServicio:3,
+    idNutricionista:6,
+    nombreServicio:'Consulta nutricional',
+    datosNutricionista:{id:6, nombre:'Felipe Araya'},
+    fecha:'2099-10-15',
+    horaInicio:'14:00:00',
+    horaTermino:'15:00:00',
+    estado:'RESERVADA'
+}
 
-
-
-describe("Reserva cliente", () => {
-    const onEditarReserva = vi.fn()
-    const onCancelarReserva = vi.fn()
-    const onMostrarReserva = vi.fn()
-
-    it("Renderizar los datos  de reserva cliente", () => {
-
-        render(
-            <ReservaCliente datos={reservaCliente} onEditar={onEditarReserva} onCancelar={onCancelarReserva}/>
-        )
-
-        expect(screen.getByText("Consulta nutricional")).toBeInTheDocument()
-        expect(screen.getByText("Presencial")).toBeInTheDocument()
-        expect(screen.getByText(/25000/)).toBeInTheDocument()
-        expect(screen.getByText(/60 min/)).toBeInTheDocument()
-        expect(screen.getByText("Felipe Araya")).toBeInTheDocument()
-        expect(screen.getByText("15/10/2026 - 14:00")).toBeInTheDocument()
-        expect(screen.getByText("Reservado")).toBeInTheDocument()
-
+describe('TusReservas', ()=>{
+    beforeEach(()=>{
+        vi.resetAllMocks()
+        obtenerReservasDeUnCliente.mockResolvedValue({data:[reserva]})
+        obtenerUnServicio.mockResolvedValue({
+            data:{id:3, modalidad:'PRESENCIAL', precio:25000, duracionMinutos:60}
+        })
+        obtenerNutricionistaSimplificado.mockResolvedValue({
+            data:{...reserva.datosNutricionista, horarioNutricionista:[{diaSemana:'martes'}]}
+        })
+        obtenerHorasDisponibles.mockResolvedValue({data:['09:00:00']})
     })
 
-    it("Mostrar boton de ver informe", async() =>{
+    it('carga las citas del cliente autenticado y separa las próximas del historial', async ()=>{
+        obtenerReservasDeUnCliente.mockResolvedValue({data:[
+            {...reserva, id:75, nombreServicio:'Consulta anterior', fecha:'2020-01-01'},
+            {...reserva, id:76, nombreServicio:'Consulta cancelada', estado:'CANCELADA'},
+            {...reserva, id:77, nombreServicio:'Consulta más lejana', fecha:'2099-12-01'},
+            reserva
+        ]})
+        render(<TusReservas/>)
+        expect(screen.getByRole('status')).toHaveTextContent('Cargando reservas')
+        await screen.findByRole('heading', {name:'Consulta nutricional'})
+        expect(obtenerReservasDeUnCliente).toHaveBeenCalledWith()
+        const tarjetas = screen.getAllByRole('article')
+        expect(tarjetas[0]).toHaveTextContent('Consulta nutricional')
+        expect(within(tarjetas[0]).getByText('15/10/2099 · 14:00 – 15:00')).toBeInTheDocument()
+        expect(tarjetas[1]).toHaveTextContent('Consulta más lejana')
+        expect(within(tarjetas[0]).getByText('Felipe Araya')).toBeInTheDocument()
+        expect(tarjetas[2]).toHaveTextContent('Consulta cancelada')
+        expect(tarjetas[3]).toHaveTextContent('Consulta anterior')
+        expect(within(tarjetas[2]).queryByRole('button')).not.toBeInTheDocument()
+        expect(within(tarjetas[3]).queryByRole('button')).not.toBeInTheDocument()
+    })
+
+    it('muestra un error de carga y permite reintentar', async ()=>{
         const user = userEvent.setup()
-        render(
-            <ReservaCliente datos={reservaCliente} onMostrar={onMostrarReserva}/>
-        )
-
-        const botonInforme = screen.getByRole("button", {name: /ver informe clínico/i})
-        expect(botonInforme).toBeInTheDocument()
-
-
-        await user.click(botonInforme)
-        expect(onMostrarReserva).toHaveBeenCalledTimes(1)
-    })
-
-    it("Ocultar botones para reserva cancelada", () => {
-
-        render(
-            <ReservaCliente datos={{...reservaCliente, estado:"Cancelado"}} onEditar={onEditarReserva} onCancelar={onCancelarReserva}/>
-        )
-
-        expect(screen.queryByRole("button", {name: /cancelar/i})).not.toBeInTheDocument()
-        expect(screen.queryByRole("button", {name: /cambiar hora/i})).not.toBeInTheDocument()
-
-    })
-})
-
-
-describe("Componente de Tus Reservas", () => {
-    it("Renderiza los titulos y consultas", () => {
+        obtenerReservasDeUnCliente.mockRejectedValueOnce(new Error('Sin conexión'))
+        obtenerReservasDeUnCliente.mockResolvedValueOnce({data:[]})
         render(<TusReservas/>)
 
-        expect(screen.getByRole("heading",{level: 1, name: /tus reservas/i})).toBeInTheDocument()
-        expect(screen.getByRole("heading",{level: 2, name: /tu próxima consulta/i})).toBeInTheDocument()
-        expect(screen.getByRole("heading",{level: 2, name: /historial de consultas/i})).toBeInTheDocument()
-
-        expect(screen.getByText("Consulta nutricional")).toBeInTheDocument()
-        expect(screen.getByText("Primera consulta nutricional")).toBeInTheDocument()
-        expect(screen.getByText("Control nutricional")).toBeInTheDocument()
-
+        expect(await screen.findByRole('alert')).toHaveTextContent('No se pudieron cargar tus reservas')
+        await user.click(screen.getByRole('button', {name:'Volver a intentar'}))
+        expect(await screen.findByText('No tienes reservas próximas.')).toBeInTheDocument()
     })
 
-    it("Abrir Modal de edicón y guardar nueva hora", async() => {
+    it('consulta los horarios reales y envía solo fecha y hora junto al ID de la reserva', async ()=>{
         const user = userEvent.setup()
+        editarReservaCliente.mockImplementation(async (_,datos)=>({
+            data:{...reserva, ...datos, horaTermino:'10:00:00'}
+        }))
         render(<TusReservas/>)
 
-        const botonCambiarHora = screen.getByRole("button", {name: /cambiar hora/i})
-        await user.click(botonCambiarHora)
+        await user.click(await screen.findByRole('button', {name:'Cambiar hora'}))
+        const form = within(screen.getByRole('dialog', {name:'Cambiar hora'}))
+        const dias = within(await form.findByText('Días disponibles').then((nodo)=> nodo.parentElement))
+        await user.click(dias.getAllByRole('button', {name:/^\d/})[0])
+        await user.click(await form.findByRole('button', {name:'09:00:00 hrs'}))
+        await user.click(form.getByRole('button', {name:'Reservar'}))
 
-        expect(screen.getByTestId("modal-editar")).toBeInTheDocument()
-
-        const botonGuardar = screen.getByRole("button", {name: /guardar cambios/i})
-        await user.click(botonGuardar)
-
-        expect(screen.getByText("15/10/2026 - 16:00")).toBeInTheDocument()
-        expect(screen.queryByTestId("modal-editar")).toBeInTheDocument()
-
+        expect(obtenerUnServicio).toHaveBeenCalledWith(reserva.idServicio)
+        expect(obtenerNutricionistaSimplificado).toHaveBeenCalledWith(reserva.idNutricionista)
+        const [, , fecha] = obtenerHorasDisponibles.mock.calls[0]
+        expect(obtenerHorasDisponibles).toHaveBeenCalledWith(reserva.idNutricionista, reserva.idServicio, fecha)
+        expect(editarReservaCliente).toHaveBeenCalledWith(reserva.id, {fecha, horaInicio:'09:00:00'})
+        expect(await screen.findByText(/09:00 – 10:00/)).toBeInTheDocument()
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     })
 
-    it("Abrir modal de confirmación y cancelar reserva", async() => {
+    it('mantiene el formulario abierto si el backend rechaza el nuevo horario', async ()=>{
         const user = userEvent.setup()
+        editarReservaCliente.mockRejectedValue({response:{status:409}})
         render(<TusReservas/>)
 
-        const botonCancelar = screen.getByRole("button", {name: /^cancelar$/i})
-        await user.click(botonCancelar)
+        await user.click(await screen.findByRole('button', {name:'Cambiar hora'}))
+        const form = within(screen.getByRole('dialog', {name:'Cambiar hora'}))
+        const dias = within(await form.findByText('Días disponibles').then((nodo)=> nodo.parentElement))
+        await user.click(dias.getAllByRole('button', {name:/^\d/})[0])
+        await user.click(await form.findByRole('button', {name:'09:00:00 hrs'}))
+        await user.click(form.getByRole('button', {name:'Reservar'}))
 
-        expect(screen.getByTestId("modal-confirmacion")).toBeInTheDocument()
-
-        const botonConfirmar = screen.getByRole("button", {name: /cancelar reserva/i})
-        await user.click(botonConfirmar)
-
-        expect(screen.getByText("Cancelado")).toBeInTheDocument()
-        expect(screen.queryByTestId("modal-confirmacion")).not.toBeInTheDocument()
-
+        expect(await form.findByRole('alert')).toHaveTextContent('No se pudo confirmar ese horario')
+        expect(screen.getByText(/14:00 – 15:00/)).toBeInTheDocument()
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
     })
 
-    it("Desplegar y cerrar los detalles de un informe clinico del historial", async() => {
+    it('mueve una cita al historial solo si el backend confirma la cancelación', async ()=>{
         const user = userEvent.setup()
+        cancelarReservaCliente.mockRejectedValueOnce(new Error('Sin conexión'))
+        cancelarReservaCliente.mockResolvedValueOnce({data:{...reserva, estado:'CANCELADA'}})
         render(<TusReservas/>)
 
-        const botonesInforme = screen.getAllByRole("button", {name: /ver informe clínico/i})
-        await user.click(botonesInforme[0])
+        await user.click(await screen.findByRole('button', {name:'Cancelar', exact:true}))
+        const modal = within(screen.getByRole('dialog'))
+        await user.click(modal.getByRole('button', {name:'Cancelar reserva'}))
 
-        expect(screen.getByTestId("detalles-informe")).toBeInTheDocument()
-        expect(screen.getByText("Informe: Primera consulta nutricional")).toBeInTheDocument()
+        expect(await modal.findByRole('alert')).toHaveTextContent('No se pudo cancelar la reserva')
+        expect(screen.getByText('Reservada')).toBeInTheDocument()
+        await user.click(modal.getByRole('button', {name:'Cancelar reserva'}))
 
-        const botonCerrarInforme = screen.getByRole("button",{name: /cerrar informe/i})
-        await user.click(botonCerrarInforme)
-
-        expect(screen.queryByTestId("detalles-informe")).not.toBeInTheDocument()
+        expect(cancelarReservaCliente).toHaveBeenLastCalledWith(reserva.id)
+        expect(await screen.findByText('Cancelada')).toBeInTheDocument()
+        expect(screen.getByText('No tienes reservas próximas.')).toBeInTheDocument()
+        expect(screen.queryByRole('button', {name:'Cambiar hora'})).not.toBeInTheDocument()
     })
-
 })
