@@ -16,7 +16,7 @@ describe("Navegar como cliente sin estar logeado", () => {
         renderAt("/")
         const servicioLink = screen.getAllByRole("link",{name: /servicios/i})
         await user.click(servicioLink[0])
-        expect(screen.getByRole("heading", {name: /servicios/i})).toBeInTheDocument()
+        expect(screen.getByRole("heading", {name: /servicios/i, level: 1})).toBeInTheDocument()
     })
 
     it("Renderiza la pagina Servicios del cliente", () => {
