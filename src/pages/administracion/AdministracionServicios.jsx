@@ -1,43 +1,41 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Servicio from '../../componente/Servicio';
 import FormularioServicio from '../../componente/FormularioServicio';
 import ModalConfirmacion from '../../componente/ModalConfirmacion';
-const SERVICIOS_INICIALES = [
-    {
-        id:1,
-        nombre:"Primera consulta nutricional",
-        precio:35000,
-        duracion:60,
-        modalidad:"Presencial"
-    },
-    {
-        id:2,
-        nombre:"Control nutricional",
-        precio:25000,
-        duracion:30,
-        modalidad:"Presencial"
-    },
-    {
-        id:3,
-        nombre:"Consulta nutricional online",
-        precio:20000,
-        duracion:30,
-        modalidad:"Online"
-    },
-    {
-        id:4,
-        nombre:"Antropometria completa",
-        precio:18000,
-        duracion:45,
-        modalidad:"Presencial"
-    }
-]
+import { obtenerServicios, crearServicio, editarServicio, eliminarServicio } from '../../services/servicioService';
 
 function AdministracionServicios(){
 
-    const [listaServicios, setListaServicios] = useState(SERVICIOS_INICIALES)
+    const [listaServicios, setListaServicios] = useState([])
+    const [estadoLista, setEstadoLista] = useState('cargando')
+    const [versionLista, setVersionLista] = useState(0)
     const [modal, setModal] = useState(false)
     const [editandoServicio, setEditandoServicio] = useState(null)
+    const [servicioEliminar, setServicioEliminar] = useState(null)
+    const [eliminando, setEliminando] = useState(false)
+    const [errorEliminar, setErrorEliminar] = useState('')
+
+    useEffect(()=>{
+        let activo = true
+
+        obtenerServicios()
+            .then((res)=>{
+                if(!activo) return
+                setListaServicios(res.data)
+                setEstadoLista('listo')
+            })
+            .catch(()=>{
+                if(activo) setEstadoLista('error')
+            })
+
+        return ()=>{ activo = false }
+    }, [versionLista])
+
+    const actualizarLista = ()=>{
+        setEstadoLista('cargando')
+        setVersionLista((version)=> version + 1)
+    }
+
     const abrirFormulario = ()=>{
         setEditandoServicio(null)
         setModal(true)
@@ -48,38 +46,37 @@ function AdministracionServicios(){
         setModal(false)
     }
 
-    const guardarServicio = (servicio)=>{
+    const guardarServicio = async (servicio)=>{
         if(editandoServicio !== null){
-            setListaServicios(listaServicios.map((value) => value.id === servicio.id ? servicio : value))
-            setEditandoServicio(null)
+            await editarServicio(editandoServicio.id, servicio)
         }else{
-            setListaServicios([...listaServicios, servicio])
+            await crearServicio(servicio)
         }
+        actualizarLista()
     }
 
-    const editarServicio = (servicio)=>{
+    const abrirEdicion = (servicio)=>{
         setEditandoServicio(servicio)
         setModal(true)
     }
 
-    const [modalEliminar, setModalEliminar] = useState(false)
-
-    const [servicioEliminar, setServicioEliminar] = useState(null)
-
     const mostrarModalEliminar = (idServicio)=>{
-        setModalEliminar(!modalEliminar)
+        setErrorEliminar('')
         setServicioEliminar(idServicio)
     }
 
-    const cancelarEliminar = ()=>{
-        setModalEliminar(!modalEliminar)
-        setServicioEliminar(null)
-    }
-
-    const eliminarServicio = (idServicio)=>{
-        setListaServicios(listaServicios.filter((value) => value.id !== idServicio))
-        setModalEliminar(!modalEliminar)
-        setServicioEliminar(null)
+    const confirmarEliminar = async ()=>{
+        setEliminando(true)
+        setErrorEliminar('')
+        try{
+            await eliminarServicio(servicioEliminar)
+            setServicioEliminar(null)
+            actualizarLista()
+        }catch{
+            setErrorEliminar('No se pudo eliminar el servicio.')
+        }finally{
+            setEliminando(false)
+        }
     }
     return(
         <div>
@@ -92,7 +89,8 @@ function AdministracionServicios(){
                 <section className="w-full flex justify-end py-4">
                     <button
                         onClick={()=> abrirFormulario()}
-                        className="px-4 py-2 bg-green-800 text-white font-semibold rounded-lg cursor-pointer"
+                        disabled={estadoLista === 'cargando'}
+                        className="px-4 py-2 bg-green-800 text-white font-semibold rounded-lg cursor-pointer disabled:opacity-50"
                     >
                         Crear servicio
                     </button>
@@ -102,17 +100,27 @@ function AdministracionServicios(){
                         <section className="w-full grid grid-cols-5 py-2 bg-gray-900 text-white px-4">
                             <p>Nombre</p>
                             <p>Precio</p>
-                            <p>Duracion</p>
+                            <p>Duración</p>
                             <p>Modalidad</p>
                             <p>Acciones</p>
                         </section>
 
                         <section>
-                            {listaServicios.map((value)=>(
+                            {estadoLista === 'cargando' && <p className="p-4" role="status">Cargando servicios...</p>}
+                            {estadoLista === 'error' &&
+                                <div className="p-4">
+                                    <p role="alert">No se pudieron cargar los servicios.</p>
+                                    <button onClick={actualizarLista} className="mt-2 underline">Volver a intentar</button>
+                                </div>
+                            }
+                            {estadoLista === 'listo' && listaServicios.length === 0 &&
+                                <p className="p-4">No hay servicios registrados.</p>
+                            }
+                            {estadoLista === 'listo' && listaServicios.map((value)=>(
                                 <Servicio
                                     key={value.id}
                                     datos={value}
-                                    onEditar={()=> editarServicio(value)}
+                                    onEditar={()=> abrirEdicion(value)}
                                     onEliminar={()=> mostrarModalEliminar(value.id)}
                                 />
                             ))}
@@ -121,20 +129,23 @@ function AdministracionServicios(){
                 </section>
             </main>
             {modal &&
-            <FormularioServicio
-                onCerrarModal={()=> cerrarFormulario()}
-                onGuardar={guardarServicio}
-                servicioEditable={editandoServicio}
-            />
-        }
-        {modalEliminar &&
-            <ModalConfirmacion
-                titulo={"¿Estas seguro que quieres eliminar el servicio?"}
-                onCancelar={()=> cancelarEliminar()}
-                onEvento={()=> eliminarServicio(servicioEliminar)}
-                textEvento={"Eliminar"}
-            />
-        }
+                <FormularioServicio
+                    onCerrarModal={cerrarFormulario}
+                    onGuardar={guardarServicio}
+                    servicioEditable={editandoServicio}
+                />
+            }
+            {servicioEliminar !== null &&
+                <ModalConfirmacion
+                    titulo="¿Estás seguro de que quieres eliminar el servicio?"
+                    descripcion="También se eliminarán las reservas asociadas a este servicio."
+                    onCancelar={()=> setServicioEliminar(null)}
+                    onEvento={confirmarEliminar}
+                    textEvento="Eliminar"
+                    procesando={eliminando}
+                    error={errorEliminar}
+                />
+            }
         </div>
     )
 
