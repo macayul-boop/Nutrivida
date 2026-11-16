@@ -18,8 +18,8 @@ describe("FormularioInforme", ()=>{
             await user.click(screen.getByRole('button', { name: 'Guardar' }))
 
             expect(screen.getByText('El peso es obligatorio')).toBeInTheDocument()
-            expect(screen.getByText('La talla es obligatorio')).toBeInTheDocument()
-            expect(screen.getByText('La circunferencia circular es obligaotrio')).toBeInTheDocument()
+            expect(screen.getByText('La talla es obligatoria')).toBeInTheDocument()
+            expect(screen.getByText('La circunferencia circular es obligatoria')).toBeInTheDocument()
             expect(screen.getByText('La descripcion es obligatorio')).toBeInTheDocument()
 
             expect(mockGuardar).not.toHaveBeenCalled()
@@ -39,12 +39,12 @@ describe("FormularioInforme", ()=>{
 
             await user.click(screen.getByRole('button', { name: 'Guardar' }))
 
-            expect(screen.getByText('La desripcion minimo debe tener 10 caracteres')).toBeInTheDocument()
+            expect(screen.getByText('La desripción mínimo debe tener 10 caracteres')).toBeInTheDocument()
 
             expect(mockGuardar).not.toHaveBeenCalled()
         })
 
-        it('guarda exitosamente los datos y cierra el modal cuando el formulario es válido', async () => {
+        it('envía exitosamente los datos formateados cuando el formulario es válido', async () => {
             const user = userEvent.setup()
             const mockGuardar = vi.fn()
             const mockCerrarModal = vi.fn()
@@ -67,6 +67,17 @@ describe("FormularioInforme", ()=>{
                 })
             )
 
+        })
+
+
+        it('llama a onCerrarModal al presionar el botón Cancelar', async () => {
+            const user = userEvent.setup()
+            const mockCerrarModal = vi.fn()
+
+            render(<FormularioInforme onGuardar={vi.fn()} onCerrarModal={mockCerrarModal} />)
+
+            await user.click(screen.getByRole('button', { name: 'Cancelar' }))
+
             expect(mockCerrarModal).toHaveBeenCalled()
         })
 
@@ -77,6 +88,7 @@ describe("FormularioInforme", ()=>{
         const informeAEditar = {
             id: 101,
             clienteId: 5,
+            fecha: "2026-10-15",
             peso: 80,
             talla: 180,
             circunferenciaCintura: 90,
@@ -98,7 +110,7 @@ describe("FormularioInforme", ()=>{
             expect(screen.getByLabelText('Descripcion')).toHaveValue('Informe de seguimiento trimestral')
         })
 
-        it('permite modificar los datos y conserva el ID original al guardar', async () => {
+        it('permite modificar los datos y la fecha original al guardar', async () => {
             const user = userEvent.setup()
             const mockGuardar = vi.fn()
 
@@ -116,19 +128,13 @@ describe("FormularioInforme", ()=>{
 
             await user.click(screen.getByRole('button', { name: 'Guardar' }))
 
-            expect(mockGuardar).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    id: 101,
-                    clienteId: 5,
-                    peso: 78,
-                })
-            )
+            expect(mockGuardar).toHaveBeenCalledWith({
+                fecha: '2026-10-15',
+                peso: 78,
+                talla: 180,
+                circunferenciaCintura: 90,
+                descripcion: 'Informe de seguimiento trimestral',
+            })
         })
     })
-
-
- 
-
-
-
 })
