@@ -5,6 +5,7 @@ import TusReservas from './TusReservas'
 import { obtenerReservasDeUnCliente, editarReservaCliente, cancelarReservaCliente, obtenerHorasDisponibles } from '../../services/reservaService'
 import { obtenerUnServicio } from '../../services/servicioService'
 import { obtenerNutricionistaSimplificado } from '../../services/usuarioService'
+import { obtenerMisInformes, obtenerMiPlan } from '../../services/fichaClinicaService'
 
 vi.mock('../../services/reservaService', ()=>({
     obtenerReservasDeUnCliente: vi.fn(),
@@ -14,6 +15,10 @@ vi.mock('../../services/reservaService', ()=>({
 }))
 vi.mock('../../services/servicioService', ()=>({obtenerUnServicio: vi.fn()}))
 vi.mock('../../services/usuarioService', ()=>({obtenerNutricionistaSimplificado: vi.fn()}))
+vi.mock('../../services/fichaClinicaService', () => ({
+    obtenerMisInformes: vi.fn(),
+    obtenerMiPlan: vi.fn()
+}))
 
 const reserva = {
     id:74,
@@ -31,6 +36,8 @@ const reserva = {
 describe('TusReservas', ()=>{
     beforeEach(()=>{
         vi.resetAllMocks()
+        obtenerMisInformes.mockResolvedValue({ data: [] })
+        obtenerMiPlan.mockResolvedValue({ data: { planAlimentacion: '' } })
         obtenerReservasDeUnCliente.mockResolvedValue({data:[reserva]})
         obtenerUnServicio.mockResolvedValue({
             data:{id:3, modalidad:'PRESENCIAL', precio:25000, duracionMinutos:60}
@@ -49,7 +56,7 @@ describe('TusReservas', ()=>{
             reserva
         ]})
         render(<TusReservas/>)
-        expect(screen.getByRole('status')).toHaveTextContent('Cargando reservas')
+        expect(screen.getByText('Cargando reservas...')).toHaveAttribute('role', 'status')
         await screen.findByRole('heading', {name:'Consulta nutricional'})
         expect(obtenerReservasDeUnCliente).toHaveBeenCalledWith()
         const tarjetas = screen.getAllByRole('article')

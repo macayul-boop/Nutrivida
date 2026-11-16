@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import FormularioEditarReserva from "../../componente/FormularioEditarReserva"
 import ModalConfirmacion from "../../componente/ModalConfirmacion"
 import { obtenerReservasDeUnCliente, editarReservaCliente, cancelarReservaCliente } from "../../services/reservaService"
+import { obtenerMisInformes, obtenerMiPlan } from "../../services/fichaClinicaService"
 
 const obtenerFechaHora = (reserva)=>{
     return new Date(`${reserva.fecha}T${reserva.horaInicio}`).getTime()
@@ -10,7 +11,7 @@ const obtenerFechaHora = (reserva)=>{
 export function ReservaCliente({datos, onEditar, onCancelar}){
     const cancelada = datos.estado === "CANCELADA"
     const estado = cancelada ? "Cancelada" : datos.estado === "RESERVADA" ? "Reservada" : datos.estado
-
+    
     return(
         <article className="max-w-[30rem] w-full border border-gray-200 rounded-xl p-3.5">
             <h3 className="font-semibold text-lg">
@@ -63,6 +64,67 @@ export function ReservaCliente({datos, onEditar, onCancelar}){
         </article>
     )
 }
+const formatearFechaInforme = (fecha)=>{
+    return new Date(`${fecha}T00:00:00`).toLocaleDateString("es-CL", {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+    })
+}
+
+function ModalInformeCliente({informe, onCerrar}){
+    const modalRef = useRef(null)
+
+    useEffect(()=>{
+        const modal = modalRef.current
+
+        if(modal && !modal.open){
+            modal.showModal()
+        }
+    }, [])
+
+    const mediciones = [
+        { nombre: "Peso", valor: informe.peso, unidad: "kg" },
+        { nombre: "Talla", valor: informe.talla, unidad: "m" },
+        { nombre: "Cintura", valor: informe.circunferenciaCintura, unidad: "cm" }
+    ]
+
+    return(
+        <dialog
+            ref={modalRef}
+            onClose={onCerrar}
+            aria-labelledby="titulo-informe-cliente"
+            className="m-auto max-h-[85vh] w-11/12 max-w-lg overflow-y-auto rounded-xl border border-gray-200 bg-white p-5 text-zinc-900 shadow-xl backdrop:bg-black/50 sm:p-6"
+        >
+            <h3 id="titulo-informe-cliente" className="text-xl font-semibold">
+                Informe nutricional #{informe.id}
+            </h3>
+            <p className="mt-1 text-sm text-gray-600">{formatearFechaInforme(informe.fecha)}</p>
+
+            <dl className="mt-5 grid grid-cols-3 gap-2">
+                {mediciones.map(({nombre, valor, unidad})=>(
+                    <div key={nombre} className="rounded-lg border border-gray-200 bg-gray-50 p-2.5">
+                        <dt className="text-sm text-gray-600">{nombre}</dt>
+                        <dd className="mt-1 font-semibold">
+                            {valor.toLocaleString("es-CL")} {unidad}
+                        </dd>
+                    </div>
+                ))}
+            </dl>
+
+            <section className="mt-4 rounded-lg border border-gray-200 p-3">
+                <h4 className="text-sm font-semibold">Observaciones</h4>
+                <p className="mt-1 whitespace-pre-wrap wrap-break-word text-sm">{informe.descripcion}</p>
+            </section>
+
+            <form method="dialog" className="mt-5 flex justify-end">
+                <button type="submit" className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium hover:bg-gray-200">
+                    Cerrar
+                </button>
+            </form>
+        </dialog>
+    )
+}
 
 export function TusReservas(){
     const [reservas, setReservas] = useState([])
@@ -73,6 +135,11 @@ export function TusReservas(){
     const [reservaCancelar, setReservaCancelar] = useState(null)
     const [cancelando, setCancelando] = useState(false)
     const [errorCancelar, setErrorCancelar] = useState("")
+    const [informes, setInformes] = useState(null)
+    const [errorInformes, setErrorInformes] = useState(false)
+    const [informeSeleccionado, setInformeSeleccionado] = useState(null)
+    const [planAlimentacion, setPlanAlimentacion] = useState(null)
+    const [errorPlan, setErrorPlan] = useState(false)
 
     useEffect(()=>{
         let activo = true
@@ -90,7 +157,32 @@ export function TusReservas(){
 
         return ()=>{ activo = false }
     }, [intento])
+    useEffect(()=>{
+        let activo = true
 
+        obtenerMisInformes()
+            .then((res)=>{
+                if(activo) setInformes(res.data)
+            })
+            .catch(()=>{
+                if(activo) setErrorInformes(true)
+            })
+
+        return ()=>{ activo = false }
+    }, [])
+    useEffect(()=>{
+    let activo = true
+
+    obtenerMiPlan()
+        .then(({data})=>{
+            if(activo) setPlanAlimentacion(data.planAlimentacion ?? "")
+        })
+        .catch(()=>{
+            if(activo) setErrorPlan(true)
+        })
+
+    return ()=>{ activo = false }
+    }, [])
     const reintentar = ()=>{
         setEstadoLista("cargando")
         setIntento((value)=> value + 1)
@@ -170,7 +262,31 @@ export function TusReservas(){
                                 ))}
                             </section>
                         </section>
-
+                        <section className="max-w-3xl mx-auto mt-5 px-4">
+                            <header className="w-full border-b-3 border-zinc-800">
+                                <h2 className="text-center sm:text-start text-2xl font-semibold py-5 text-zinc-900">
+                                    Plan nutricional
+                                </h2>
+                            </header>
+                            <div className="mt-7">
+                                {errorPlan ? (
+                                    <p role="alert">No se pudo cargar tu plan nutricional.</p>
+                                ) : planAlimentacion === null ? (
+                                    <p role="status">Cargando plan nutricional...</p>
+                                ) : planAlimentacion.trim() === "" ? (
+                                    <p>Aún no tienes un plan nutricional asignado.</p>
+                                ) : (
+                                    <>
+                                        <p className="text-gray-800">
+                                            Acá puedes revisar el plan que te asignó tu nutricionista.
+                                        </p>
+                                        <p className="mt-2.5 border border-gray-200 rounded-xl p-4 whitespace-pre-wrap wrap-break-word text-gray-800">
+                                            {planAlimentacion}
+                                        </p>
+                                    </>
+                                )}
+                            </div>
+                        </section>
                         <section className="max-w-3xl mx-auto mt-5 px-4">
                             <section className="w-full border-b-3 border-zinc-800">
                                 <h2 className="text-center sm:text-start text-2xl font-semibold py-5 text-zinc-900">
@@ -187,6 +303,59 @@ export function TusReservas(){
                         </section>
                     </>
                 }
+                <section className="max-w-3xl mx-auto mt-5 px-4">
+                    <header className="w-full border-b-3 border-zinc-800">
+                        <h2 className="text-center sm:text-start text-2xl font-semibold py-5 text-zinc-900">
+                            Mis informes
+                        </h2>
+                    </header>
+
+                    <div className="mt-4">
+                        {errorInformes ? (
+                            <p role="alert">No se pudieron cargar tus informes.</p>
+                        ) : informes === null ? (
+                            <p role="status">Cargando informes...</p>
+                        ) : informes.length === 0 ? (
+                            <p>Aún no tienes informes.</p>
+                        ) : (
+                            <ul className="space-y-3">
+                                {informes.map((informe)=>(
+                                    <li
+                                        key={informe.id}
+                                        className="max-w-[30rem] w-full flex items-center justify-between gap-3 border border-gray-200 rounded-xl p-3.5"
+                                    >
+                                        <div>
+                                            <p className="font-semibold text-lg">Informe #{informe.id}</p>
+                                            <time dateTime={informe.fecha} className="text-sm text-gray-600">
+                                                {formatearFechaInforme(informe.fecha)}
+                                            </time>
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={()=> setInformeSeleccionado(informe)}
+                                            aria-label={`Ver informe ${informe.id}`}
+                                            aria-haspopup="dialog"
+                                            className="shrink-0 p-2.5 cursor-pointer hover:text-emerald-700"
+                                        >
+                                            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="size-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"/>
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                                            </svg>
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+
+                    {informeSeleccionado && (
+                        <ModalInformeCliente
+                            informe={informeSeleccionado}
+                            onCerrar={()=> setInformeSeleccionado(null)}
+                        />
+                    )}
+                </section>
             </main>
 
             {reservaEditar !== null &&
