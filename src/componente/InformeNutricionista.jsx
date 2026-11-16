@@ -1,8 +1,19 @@
 function InformeNutricionista({datos, onEditar, onMostrar}){
+
+    const formatearFecha = (fecha) => {
+        if (!fecha) return "";
+        if (typeof fecha === "string" && fecha.includes("-")) {
+            const [anio, mes, dia] = fecha.split("-");
+            return `${dia}/${mes}/${anio}`;
+        }
+        return fecha;
+    };
+
+
     return(
-        <article className="w-full grid grid-cols-3">
-            <p>#{datos.id}</p>
-            <p>{datos.fecha}</p>
+        <article className="w-full grid grid-cols-3 items-center py-1.5 px-2 rounded hover:bg-gray-100 border-b border-gray-200 last:border-b-0">
+            <p className="font-medium text-gray-800">#{datos.id}</p>
+            <p className="text-gray-600">{formatearFecha(datos.fecha)}</p>
             <div className="flex justify-end gap-2.5">
                 <button onClick={onEditar} className="cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
