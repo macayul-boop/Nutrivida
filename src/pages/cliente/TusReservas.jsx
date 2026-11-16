@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import FormularioEditarReserva from "../../componente/FormularioEditarReserva"
 import ModalConfirmacion from "../../componente/ModalConfirmacion"
 import { obtenerReservasDeUnCliente, editarReservaCliente, cancelarReservaCliente } from "../../services/reservaService"
-import { obtenerMisInformes } from "../../services/fichaClinicaService"
+import { obtenerMisInformes, obtenerMiPlan } from "../../services/fichaClinicaService"
 
 const obtenerFechaHora = (reserva)=>{
     return new Date(`${reserva.fecha}T${reserva.horaInicio}`).getTime()
@@ -138,6 +138,8 @@ export function TusReservas(){
     const [informes, setInformes] = useState(null)
     const [errorInformes, setErrorInformes] = useState(false)
     const [informeSeleccionado, setInformeSeleccionado] = useState(null)
+    const [planAlimentacion, setPlanAlimentacion] = useState(null)
+    const [errorPlan, setErrorPlan] = useState(false)
 
     useEffect(()=>{
         let activo = true
@@ -167,6 +169,19 @@ export function TusReservas(){
             })
 
         return ()=>{ activo = false }
+    }, [])
+    useEffect(()=>{
+    let activo = true
+
+    obtenerMiPlan()
+        .then(({data})=>{
+            if(activo) setPlanAlimentacion(data.planAlimentacion ?? "")
+        })
+        .catch(()=>{
+            if(activo) setErrorPlan(true)
+        })
+
+    return ()=>{ activo = false }
     }, [])
     const reintentar = ()=>{
         setEstadoLista("cargando")
@@ -247,7 +262,31 @@ export function TusReservas(){
                                 ))}
                             </section>
                         </section>
-
+                        <section className="max-w-3xl mx-auto mt-5 px-4">
+                            <header className="w-full border-b-3 border-zinc-800">
+                                <h2 className="text-center sm:text-start text-2xl font-semibold py-5 text-zinc-900">
+                                    Plan nutricional
+                                </h2>
+                            </header>
+                            <div className="mt-7">
+                                {errorPlan ? (
+                                    <p role="alert">No se pudo cargar tu plan nutricional.</p>
+                                ) : planAlimentacion === null ? (
+                                    <p role="status">Cargando plan nutricional...</p>
+                                ) : planAlimentacion.trim() === "" ? (
+                                    <p>Aún no tienes un plan nutricional asignado.</p>
+                                ) : (
+                                    <>
+                                        <p className="text-gray-800">
+                                            Acá puedes revisar el plan que te asignó tu nutricionista.
+                                        </p>
+                                        <p className="mt-2.5 border border-gray-200 rounded-xl p-4 whitespace-pre-wrap wrap-break-word text-gray-800">
+                                            {planAlimentacion}
+                                        </p>
+                                    </>
+                                )}
+                            </div>
+                        </section>
                         <section className="max-w-3xl mx-auto mt-5 px-4">
                             <section className="w-full border-b-3 border-zinc-800">
                                 <h2 className="text-center sm:text-start text-2xl font-semibold py-5 text-zinc-900">
